@@ -3,7 +3,7 @@ const Users = db.users;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Tutorial
-exports.create = (req, res) => {
+//exports.create = (req, res) => {
     // Validate request
     /*  if (!req.body.title) {
           res.status(400).send({
@@ -13,7 +13,7 @@ exports.create = (req, res) => {
       }*/
 
     // Create a Tutorial
-    const users = {
+ /*   const users = {
         name: req.body.name,
         surname: req.body.surname,
         patronymic: req.body.patronymic,
@@ -25,10 +25,10 @@ exports.create = (req, res) => {
         /*title: req.body.title,
         description: req.body.description,
         published: req.body.published ? req.body.published : false*/
-    };
+    //};
 
     // Save Tutorial in the database
-    Users.create(users)
+    /*Users.create(users)
         .then(data => {
             res.send(data);
         })
@@ -37,8 +37,8 @@ exports.create = (req, res) => {
                 message:
                     err.message || "Some error occurred while creating the Tutorial."
             });
-        });
-};
+        });*/
+//};
 
 /*
 
@@ -58,12 +58,12 @@ exports.findAll = (req, res) => {
             });
         });
 };
-
+*/
 // Find a single Tutorial with an id
-exports.findOne = (req, res) => {
+/*exports.findOne = (req, res) => {
     const id = req.params.id;
 
-    Tutorial.findByPk(id)
+    Users.findByPk(id)
         .then(data => {
             res.send(data);
         })
@@ -72,8 +72,8 @@ exports.findOne = (req, res) => {
                 message: "Error retrieving Tutorial with id=" + id
             });
         });
-};
-
+};*/
+/*
 // Update a Tutorial by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;
@@ -154,6 +154,10 @@ exports.findAllPublished = (req, res) => {
             });
         });
 };
-
-
  */
+exports.allAccess = (req, res) => {
+    res.status(200).send("Public Content.");
+};
+exports.userBoard = (req, res) => {
+    res.status(200).send("User Content.");
+};

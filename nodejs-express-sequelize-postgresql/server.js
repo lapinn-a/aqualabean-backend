@@ -4,6 +4,8 @@ const cors = require("cors");
 
 const app = express();
 
+Error.stackTraceLimit = 50;
+
 var corsOptions = {
   origin: "http://localhost:8081"
 };
@@ -17,11 +19,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const db = require("./app/models");
-db.sequelize.sync();
-// // drop the table if it already exists
-// db.sequelize.sync({ force: true }).then(() => {
-//   console.log("Drop and re-sync db.");
-// });
+const Roles = db.roles;
+//db.sequelize.sync();
+ // drop the table if it already exists
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and re-sync db.");
+  initial();
+});
+
+function initial() {
+  Roles.create({
+    id: 0,
+    name: "user"
+  });
+}
 
 // simple route
 app.get("/", (req, res) => {
@@ -29,6 +40,7 @@ app.get("/", (req, res) => {
 });
 
 require("./app/routes/turorial.routes")(app);
+require("./app/routes/auth.routes")(app);
 require("./app/routes/users.routes")(app);
 
 // set port, listen for requests
