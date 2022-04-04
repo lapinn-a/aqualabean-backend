@@ -31,6 +31,16 @@ checkDuplicate = (req, res, next) => {
     });
 };
 
+checkName = (req, res, next) => {
+    if(!req.body.name) {
+        res.status(400).send({
+            message: "Failed! Name not provided"
+        });
+        return;
+    }
+    next();
+};
+
 checkRolesExisted = (req, res, next) => {
     if(req.body.roles) {
         for (let i = 0; i < req.body.roles.length; i++) {
@@ -46,44 +56,39 @@ checkRolesExisted = (req, res, next) => {
 };
 
 checkPhone = (req, res, next) => {
-    if(req.body.phone) {
-        if (req.body.phone.search(/\+7\(\d{3}\)\d{3}-\d{2}-\d{2}/) !== 0) {
-            res.status(400).send({
-                message: "Failed! Phone format wrong"
-            });
-            return;
-        }
+    if (!req.body.phone || req.body.phone.search(/\+7\(\d{3}\)\d{3}-\d{2}-\d{2}/) !== 0) {
+        res.status(400).send({
+            message: "Failed! Phone format wrong"
+        });
+        return;
     }
     next();
 };
 
 checkEmail = (req, res, next) => {
-    if(req.body.email) {
-        if (!validator.validate(req.body.email)) {
-            res.status(400).send({
-                message: "Failed! Email format wrong"
-            });
-            return;
-        }
+    if (!req.body.email || !validator.validate(req.body.email)) {
+        res.status(400).send({
+            message: "Failed! Email format wrong"
+        });
+        return;
     }
     next();
 };
 
 checkPassword = (req, res, next) => {
-    if(req.body.password) {
-        var regExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");;
-        if (!regExp.test(req.body.password)) {
-            res.status(400).send({
-                message: "Failed! Password incorrect"
-            });
-            return;
-        }
+    var regExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$");
+    if (!req.body.password || !regExp.test(req.body.password)) {
+        res.status(400).send({
+            message: "Failed! Password incorrect"
+        });
+        return;
     }
     next();
 };
 
 const verifyRegister = {
     checkDuplicate: checkDuplicate,
+    checkName: checkName,
     checkRolesExisted: checkRolesExisted,
     checkPhone: checkPhone,
     checkEmail: checkEmail,

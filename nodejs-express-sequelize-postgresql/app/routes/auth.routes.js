@@ -12,6 +12,7 @@ module.exports = function(app) {
         "/auth/register",
         [
             verifyRegister.checkDuplicate,
+            verifyRegister.checkName,
             verifyRegister.checkRolesExisted,
             verifyRegister.checkPhone,
             verifyRegister.checkEmail,
