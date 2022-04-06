@@ -64,4 +64,33 @@ exports.findOne = (req, res) => {
         });
 };
 
+exports.getCatalog = (req, res) => {
+    const where = {};
+    var limit;
+    var offset;
+
+    if (typeof req.query.limit != 'undefined' && typeof req.query.offset != 'undefined') {
+        limit = +req.query.limit;
+        offset = +req.query.offset;
+    } else if (typeof req.query.page != 'undefined' && typeof req.query.size != 'undefined') {
+        limit = req.query.size;
+        offset = req.query.size * (req.query.page - 1);
+    } else {
+        res.status(400).send({
+            message: "Error in query parameters"
+        });
+        return;
+    }
+
+    Product.findAndCountAll({where, limit, offset})
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error while loading catalog"
+            });
+        });
+};
+
 

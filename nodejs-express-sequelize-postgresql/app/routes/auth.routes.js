@@ -9,7 +9,7 @@ module.exports = function(app) {
         next();
     });
     app.post(
-        "/auth/register",
+        "/api/auth/register",
         [
             verifyRegister.checkDuplicate,
             verifyRegister.checkName,
@@ -20,5 +20,5 @@ module.exports = function(app) {
         ],
         controller.register
     );
-    app.post("/auth/login", controller.login);
+    app.post("/api/auth/login", controller.login);
 };
