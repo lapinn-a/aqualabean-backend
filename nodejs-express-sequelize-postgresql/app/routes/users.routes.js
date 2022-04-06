@@ -8,9 +8,9 @@ module.exports = function(app) {
         );
         next();
     });
-    app.get("/test/all", controller.allAccess);
+    app.get("/api/test/all", controller.allAccess);
     app.get(
-        "/test/user",
+        "/api/test/user",
         [auth.verifyToken],
         controller.userBoard
     );
