@@ -20,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const db = require("./app/models");
 const Roles = db.roles;
+const Products = db.product;
 //db.sequelize.sync();
  // drop the table if it already exists
 db.sequelize.sync({ force: true }).then(() => {
@@ -32,6 +33,15 @@ function initial() {
     id: 0,
     name: "user"
   });
+  for (var i = 1; i <= 60; i++) {
+    var price = Math.floor(Math.random() * (10000 - 2000 + 1)) + 2000;
+    var amount = Math.floor(Math.random() * (500 - 1 + 1)) + 1;
+    Products.create({
+      name: "water_" + i,
+      price: price / 100,
+      amount: amount
+    });
+  }
 }
 
 // simple route

@@ -6,7 +6,21 @@ const Op = db.Sequelize.Op;
 exports.create = (req, res) => {
     if (!req.body.name) {
         res.status(400).send({
-            message: "Content can not be empty!"
+            message: "Name not specified!"
+        });
+        return;
+    }
+
+    if (req.body.price <= 0) {
+        res.status(400).send({
+            message: "Inappropriate price!"
+        });
+        return;
+    }
+
+    if (req.body.amount < 0) {
+        res.status(400).send({
+            message: "Inappropriate amount!"
         });
         return;
     }
@@ -55,23 +69,30 @@ exports.findOne = (req, res) => {
 
     Product.findByPk(id)
         .then(data => {
-            res.send(data);
+            if(data) {
+                res.send(data);
+            } else {
+                res.status(404).send({
+                    message: "Product not found"
+                });
+            }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Product with code=" + id
+                message: "Error retrieving Product with id = " + id
             });
         });
 };
 
+// Получить каталог товаров
 exports.getCatalog = (req, res) => {
     const where = {};
     var limit;
     var offset;
 
     if (typeof req.query.limit != 'undefined' && typeof req.query.offset != 'undefined') {
-        limit = +req.query.limit;
-        offset = +req.query.offset;
+        limit = req.query.limit;
+        offset = req.query.offset;
     } else if (typeof req.query.page != 'undefined' && typeof req.query.size != 'undefined') {
         limit = req.query.size;
         offset = req.query.size * (req.query.page - 1);
