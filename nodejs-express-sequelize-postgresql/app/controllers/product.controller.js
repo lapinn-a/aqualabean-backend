@@ -89,6 +89,8 @@ exports.getCatalog = (req, res) => {
     const where = {};
     var limit;
     var offset;
+    var order = [['id', 'ASC']];
+    
 
     if (typeof req.query.limit != 'undefined' && typeof req.query.offset != 'undefined') {
         limit = req.query.limit;
@@ -102,8 +104,31 @@ exports.getCatalog = (req, res) => {
         });
         return;
     }
+    
+    if(typeof req.query.sort != 'undefined' && typeof req.query.order != 'undefined'){
+        if (req.query.order === 'asc') {
+            order[0][1] = req.query.order;
+        } else if (req.query.order === 'desc') {
+            order[0][1] = req.query.order;
+        } else {
+            res.status(400).send({
+                message: "Error in query parameters"
+            });
+            return;
+        }
 
-    Product.findAndCountAll({where, limit, offset})
+        if (req.query.sort === 'price') {
+            order[0][0] = req.query.sort;
+        } else {
+            res.status(400).send({
+                message: "Error in query parameters"
+            });
+            return;
+        }
+        order = [[req.query.sort, req.query.order]];
+    }
+
+    Product.findAndCountAll({where, limit, offset, order})
         .then(data => {
             res.send(data);
         })

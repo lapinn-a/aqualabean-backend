@@ -33,7 +33,7 @@ function initial() {
     id: 0,
     name: "user"
   });
-  for (var i = 1; i <= 60; i++) {
+  for (var i = 1; i <= 63; i++) {
     var price = Math.floor(Math.random() * (10000 - 2000 + 1)) + 2000;
     var amount = Math.floor(Math.random() * (500 - 1 + 1)) + 1;
     Products.create({
