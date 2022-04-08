@@ -1,5 +1,6 @@
 const { auth } = require("../middleware");
 const controller = require("../controllers/users.controller");
+const tutorials = require("../controllers/tutorial.controller");
 module.exports = function(app) {
     app.use(function(req, res, next) {
         res.header(

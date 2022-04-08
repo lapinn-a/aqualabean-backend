@@ -21,4 +21,5 @@ module.exports = function(app) {
         controller.register
     );
     app.post("/api/auth/login", controller.login);
+    app.put("/api/update", controller.updateData);
 };
