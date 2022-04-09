@@ -1,4 +1,5 @@
 const db = require("../models");
+const bcrypt = require("bcryptjs");
 const Users = db.users;
 const Op = db.Sequelize.Op;
 
@@ -163,38 +164,29 @@ exports.userBoard = (req, res) => {
 };
 
 exports.updateData = (req, res) => {
-    const { name, surname, patronymic, phones, email, password, organization_id } = req.body;
-    if (name === "") return res.status(400).send({ message: "`name` must not be an empty string"});
-    else if (surname === "") return res.status(400).send({ message: "`surname` must not be an empty string"});
-    else if (patronymic === "") return res.status(400).send({ message: "`patronymic` must not be an empty string"});
-    else if (phones === "") return res.status(400).send({ message: "`phone` must not be an empty string"});
-    else if (email === "") return res.status(400).send({ message: "`email` must not be an empty string"});
-    else if (password === "") return res.status(400).send({ message: "`password` must not be an empty string"});
-    else if (organization_id === "") return res.status(400).send({ message: "`organization_id` must not be an empty string"});
+    if(req.body.password){
+        req.body.password = bcrypt.hashSync(req.body.password, 8);
+    }
 
-    else {
-        const phone = req.params.phone;
-        Users.update(req.body, {
-            where: {
-                phone: req.body.phone
+    Users.update(req.body, {
+        where: {
+            id: req.userId
+        }
+    })
+        .then(num => {
+            if (num == 1) {
+                res.send({
+                    message: "User data was updated successfully."
+                });
+            } else {
+                res.status(400).send({
+                    message: `Cannot update user data. Maybe user data was not found or update request is empty!`
+                });
             }
         })
-            .then(num => {
-                if (num == 1) {
-                    res.send({
-                        message: "User data was updated successfully."
-                    });
-                } else {
-                    res.status(200).send({
-                        message: `Cannot update user data with phone=${phone}. Maybe user data was not found or req.body is empty!`
-                    });
-                }
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: "Error updating user with phone=" + phone
-                });
+        .catch(err => {
+            res.status(500).send({
+                message: "Error updating user"
             });
-
-    }
+        });
 };

@@ -1,6 +1,6 @@
 const auth = require("./auth");
-const verifyRegister = require("./verifyRegister");
+const verifyRegister = require("./verifyUserData");
 module.exports = {
     auth,
-    verifyRegister
+    verifyUserData: verifyRegister
 };
