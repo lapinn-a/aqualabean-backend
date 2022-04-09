@@ -159,8 +159,33 @@ exports.findAllPublished = (req, res) => {
 exports.allAccess = (req, res) => {
     res.status(200).send("Public Content.");
 };
+
 exports.userBoard = (req, res) => {
-    res.status(200).send("User Content.");
+    const id = req.userId;
+
+    Users.findByPk(id)
+        .then(user => {
+            if(user) {
+                res.status(200).send({
+                    id: user.id,
+                    name: user.name,
+                    surname: user.surname,
+                    patronymic: user.patronymic,
+                    phone: user.phone,
+                    email: user.email,
+                    organization_id: user.organization_id
+                });
+            } else {
+                res.status(404).send({
+                    message: "User not found"
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error retrieving user profile"
+            });
+        });
 };
 
 exports.updateData = (req, res) => {
