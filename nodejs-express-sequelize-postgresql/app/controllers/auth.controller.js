@@ -83,27 +83,3 @@ exports.login = (req, res) => {
             res.status(500).send({ message: err.message });
         });
 };
-
-exports.updateData = (req, res) => {
-    const phone = req.params.phone;
-
-    User.update(req.body, {
-        where: { phone: req.body.phone }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "User data was updated successfully."
-                });
-            } else {
-                res.send({
-                    message: `Cannot update user data with phone=${phone}. Maybe user data was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error updating user with phone=" + phone
-            });
-        });
-};

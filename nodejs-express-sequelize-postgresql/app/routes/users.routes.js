@@ -1,6 +1,5 @@
 const { auth } = require("../middleware");
 const controller = require("../controllers/users.controller");
-const tutorials = require("../controllers/tutorial.controller");
 module.exports = function(app) {
     app.use(function(req, res, next) {
         res.header(
@@ -15,6 +14,7 @@ module.exports = function(app) {
         [auth.verifyToken],
         controller.userBoard
     );
+    app.put("/api/account",[auth.verifyToken], controller.updateData);
     /*app.get(
         "/test/mod",
         [authJwt.verifyToken, authJwt.isModerator],
