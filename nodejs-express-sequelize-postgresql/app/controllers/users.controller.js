@@ -1,4 +1,5 @@
 const db = require("../models");
+const bcrypt = require("bcryptjs");
 const Users = db.users;
 const Op = db.Sequelize.Op;
 
@@ -160,4 +161,32 @@ exports.allAccess = (req, res) => {
 };
 exports.userBoard = (req, res) => {
     res.status(200).send("User Content.");
+};
+
+exports.updateData = (req, res) => {
+    if(req.body.password){
+        req.body.password = bcrypt.hashSync(req.body.password, 8);
+    }
+
+    Users.update(req.body, {
+        where: {
+            id: req.userId
+        }
+    })
+        .then(num => {
+            if (num == 1) {
+                res.send({
+                    message: "User data was updated successfully."
+                });
+            } else {
+                res.status(400).send({
+                    message: `Cannot update user data. Maybe user data was not found or update request is empty!`
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error updating user"
+            });
+        });
 };
