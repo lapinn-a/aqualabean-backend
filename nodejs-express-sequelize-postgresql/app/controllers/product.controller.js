@@ -50,7 +50,6 @@ exports.create = (req, res) => {
 exports.findAll = (req, res) => {
     const name = req.query.name;
     var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
-
     Product.findAll({ where: condition })
         .then(data => {
             res.send(data);

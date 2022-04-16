@@ -59,6 +59,14 @@ require("./app/routes/users.routes")(app);
 require("./app/routes/product.routes")(app);
 require("./app/routes/catalog.routes")(app);
 
+
+//Почему то не работает :(
+// Function to serve all static files
+// inside public directory.
+app.use(express.static('public'));
+app.use('/images', express.static('images'));
+
+
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {

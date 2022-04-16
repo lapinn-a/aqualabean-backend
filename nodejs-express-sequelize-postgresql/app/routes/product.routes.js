@@ -13,6 +13,5 @@ module.exports = app => {
     // Получить товар по ID
     router.get("/:id", products.findOne);
 
-
     app.use("/api/product", router);
 };
