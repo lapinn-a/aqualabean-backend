@@ -37,7 +37,7 @@ function initial() {
     var price = Math.floor(Math.random() * (10000 - 2000 + 1)) + 2000;
     var amount = Math.floor(Math.random() * (500 - 1 + 1)) + 1;
     var volumeAll = [0.33, 0.5, 0.75, 1.0, 1.5, 5.0, 19.0];
-    var rand = Math.random()*volumeAll.length;
+    var rand = Math.random()*volumeAll.length | 0;
     var volume = volumeAll[rand];
     Products.create({
       name: "water_" + i,
