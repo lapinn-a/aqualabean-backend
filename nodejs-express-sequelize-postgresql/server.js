@@ -76,7 +76,7 @@ require("./app/routes/catalog.routes")(app);
 // Function to serve all static files
 // inside public directory.
 app.use(express.static('public'));
-app.use('/images', express.static('images'));
+app.use('images', express.static('images'));
 
 
 // set port, listen for requests

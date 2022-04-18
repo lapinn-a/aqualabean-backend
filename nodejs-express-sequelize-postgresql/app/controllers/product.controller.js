@@ -46,6 +46,19 @@ exports.create = (req, res) => {
         });
 };
 
+var images = [
+    { id: 1, url: "[https://aqualabean.ru/api/images/1/water-1.png , https://aqualabean.ru/api/images/2/water-2.png]"},
+    { id: 2, url: "https://aqualabean.ru/api/images/2/water-2.png"},
+    { id: 3, url: "https://aqualabean.ru/api/images/3/water-3.png"},
+    { id: 4, url: "https://aqualabean.ru/api/images/4/water-4.png"},
+    { id: 5, url: "https://aqualabean.ru/api/images/5/water-5.png"},
+    { id: 6, url: "https://aqualabean.ru/api/images/6/water-6.png"},
+    { id: 7, url: "https://aqualabean.ru/api/images/7/water-7.png"},
+    { id: 8, url: "https://aqualabean.ru/api/images/8/water-8.png"},
+    { id: 9, url: "https://aqualabean.ru/api/images/9/water-9.png"},
+    { id: 10, url: "https://aqualabean.ru/api/images/10/water-10.png"}
+]
+
 // Получить все товары
 exports.findAll = (req, res) => {
     const name = req.query.name;
@@ -65,11 +78,31 @@ exports.findAll = (req, res) => {
 // Получить товар по ID
 exports.findOne = (req, res) => {
     const id = req.params.id;
-
+    const image = images[id-1];
     Product.findByPk(id)
         .then(data => {
             if(data) {
-                res.send(data);
+                if((id-1) >= images.length) {
+                    res.status(200).send({
+                        id: data.id,
+                        name: data.name,
+                        price: data.price,
+                        amount: data.amount,
+                        volume: data.volume,
+                        images: "images not found"
+                    });
+                }
+                else if(image){
+                    res.status(200).send({
+                        id: data.id,
+                        name: data.name,
+                        price: data.price,
+                        amount: data.amount,
+                        volume: data.volume,
+                        images: image.url
+                    });
+                }
+                //res.send(data);
             } else {
                 res.status(404).send({
                     message: "Product not found"
