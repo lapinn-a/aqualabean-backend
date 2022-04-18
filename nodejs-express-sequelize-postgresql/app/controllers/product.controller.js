@@ -47,7 +47,7 @@ exports.create = (req, res) => {
 };
 
 var images = [
-    { id: 1, url: "[https://aqualabean.ru/api/images/1/water-1.png , https://aqualabean.ru/api/images/2/water-2.png]"},
+    { id: 1, url: ["https://aqualabean.ru/api/images/1/water-1.png","https://aqualabean.ru/api/images/2/water-2.png"]},
     { id: 2, url: "https://aqualabean.ru/api/images/2/water-2.png"},
     { id: 3, url: "https://aqualabean.ru/api/images/3/water-3.png"},
     { id: 4, url: "https://aqualabean.ru/api/images/4/water-4.png"},
