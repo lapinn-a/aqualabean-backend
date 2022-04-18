@@ -45,7 +45,7 @@ exports.create = (req, res) => {
             });
         });
 };
-
+//Images URLs
 var images = [
     { id: 1, url: ["https://aqualabean.ru/api/images/1/water-1.png","https://aqualabean.ru/api/images/2/water-2.png"]},
     { id: 2, url: "https://aqualabean.ru/api/images/2/water-2.png"},
@@ -59,20 +59,35 @@ var images = [
     { id: 10, url: "https://aqualabean.ru/api/images/10/water-10.png"}
 ]
 
+//Реализация сканирования файлов не работает!, так как проблемы get запросами файлов на localhost
+/*var fs = require('fs');
+var files = fs.readdirSync('/images');*/
+
 // Получить все товары
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
     const name = req.query.name;
     var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
-    Product.findAll({ where: condition })
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving products."
+
+    const prod = await Product.findAll({ where: condition });
+    //prod.forEach((data) => data.setDataValue("images",[]));
+
+    prod.forEach((data) => {
+        if(data) {
+            const image = images[data.id - 1];
+            if((data.id - 1) >= images.length) {
+                data.setDataValue("images",[]);
+            }
+            else if(image){
+                data.setDataValue("images",image.url)
+            }
+            //res.send(data);
+        } else {
+            res.status(404).send({
+                message: "Product not found"
             });
-        });
+        }
+    });
+    return res.json(prod);
 };
 
 // Получить товар по ID
@@ -89,7 +104,7 @@ exports.findOne = (req, res) => {
                         price: data.price,
                         amount: data.amount,
                         volume: data.volume,
-                        images: "images not found"
+                        images: []
                     });
                 }
                 else if(image){
@@ -117,7 +132,7 @@ exports.findOne = (req, res) => {
 };
 
 // Получить каталог товаров
-exports.getCatalog = (req, res) => {
+exports.getCatalog = async (req, res) => {
     const where = {};
     var limit;
     var offset;
@@ -154,7 +169,7 @@ exports.getCatalog = (req, res) => {
         order = [[req.query.sort, req.query.order]];
     }
 
-    Product.findAndCountAll({where, limit, offset, order})
+    /*Product.findAndCountAll({where, limit, offset, order})
         .then(data => {
             res.send(data);
         })
@@ -162,7 +177,24 @@ exports.getCatalog = (req, res) => {
             res.status(500).send({
                 message: "Error while loading catalog"
             });
-        });
+        });*/
+
+    const { count, rows } = await Product.findAndCountAll({where, limit, offset, order});
+    rows.forEach((data) => {
+        if(data) {
+            const image = images[data.id - 1];
+            if((data.id - 1) >= images.length) {
+                data.setDataValue("images",[]);
+            }
+            else if(image){
+                data.setDataValue("images",image.url)
+            }
+            //res.send(data);
+        } else {
+            res.status(404).send({
+                message: "Product not found"
+            });
+        }
+    });
+    return res.json(rows);
 };
-
-
