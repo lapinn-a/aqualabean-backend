@@ -15,6 +15,9 @@ module.exports = (sequelize, Sequelize) => {
         volume: {
             type: Sequelize.DECIMAL(4, 2)
         },
+        image: {
+            type: Sequelize.STRING
+        },
     });
 
     return Product;
