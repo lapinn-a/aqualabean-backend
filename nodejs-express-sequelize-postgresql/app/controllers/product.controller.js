@@ -130,6 +130,9 @@ exports.getCatalog = (req, res) => {
             data.rows.forEach((row) => {
                 promises.push(getImages(row.id)
                     .then((images) => {
+                        if(images.length > 1){
+                            images.length = 1;
+                        }
                         row.setDataValue("images", images);
                     })
                 );
