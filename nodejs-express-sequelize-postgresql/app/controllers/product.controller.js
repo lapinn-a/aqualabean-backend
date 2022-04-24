@@ -1,4 +1,5 @@
 const db = require("../models");
+const fs = require('fs');
 const Product = db.product;
 const Op = db.Sequelize.Op;
 
@@ -46,31 +47,33 @@ exports.create = (req, res) => {
         });
 };
 
-// Получить все товары
-exports.findAll = (req, res) => {
-    const name = req.query.name;
-    var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
+// Получить адреса изображений
+function getImages(id) {
+    const server = 'https://aqualabean.ru/api/images/';
 
-    Product.findAll({ where: condition })
-        .then(data => {
-            res.send(data);
+    return fs.promises.readdir('./images/' + id)
+        .then(files => {
+            return files.sort((a, b) => {
+                return a.split('.')[0].localeCompare(b.split('.')[0], undefined, {
+                    numeric: true,
+                    sensitivity: 'base',
+                    ignorePunctuation: true
+                });
+            }).map(file => server + id + '/' + file);
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving products."
-            });
+        .catch(() => {
+            return [];
         });
-};
+}
 
 // Получить товар по ID
 exports.findOne = (req, res) => {
     const id = req.params.id;
-
-    Product.findByPk(id)
+    Promise.all([Product.findByPk(id), getImages(id)])
         .then(data => {
-            if(data) {
-                res.send(data);
+            if (data[0]) {
+                data[0].setDataValue("images", data[1]);
+                res.send(data[0]);
             } else {
                 res.status(404).send({
                     message: "Product not found"
@@ -90,7 +93,6 @@ exports.getCatalog = (req, res) => {
     var limit;
     var offset;
     var order = [['id', 'ASC']];
-    
 
     if (typeof req.query.limit != 'undefined' && typeof req.query.offset != 'undefined') {
         limit = req.query.limit;
@@ -104,8 +106,8 @@ exports.getCatalog = (req, res) => {
         });
         return;
     }
-    
-    if(typeof req.query.sort != 'undefined' && typeof req.query.order != 'undefined'){
+
+    if (typeof req.query.sort != 'undefined' && typeof req.query.order != 'undefined') {
         if (req.query.order !== 'asc' && req.query.order !== 'desc') {
             res.status(400).send({
                 message: "Error in query parameters"
@@ -124,7 +126,21 @@ exports.getCatalog = (req, res) => {
 
     Product.findAndCountAll({where, limit, offset, order})
         .then(data => {
-            res.send(data);
+            const promises = [];
+            data.rows.forEach((row) => {
+                promises.push(getImages(row.id)
+                    .then((images) => {
+                        if(images.length > 1){
+                            images.length = 1;
+                        }
+                        row.setDataValue("images", images);
+                    })
+                );
+            });
+            Promise.all(promises)
+                .then(() => {
+                    res.send(data);
+                });
         })
         .catch(err => {
             res.status(500).send({
@@ -132,5 +148,3 @@ exports.getCatalog = (req, res) => {
             });
         });
 };
-
-

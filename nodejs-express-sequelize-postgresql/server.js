@@ -34,13 +34,17 @@ function initial() {
     id: 0,
     name: "user"
   });
-  for (var i = 1; i <= 63; i++) {
+  for (var i = 1; i <= 1003; i++) {
     var price = Math.floor(Math.random() * (10000 - 2000 + 1)) + 2000;
     var amount = Math.floor(Math.random() * (500 - 1 + 1)) + 1;
+    var volumeAll = [0.33, 0.5, 0.75, 1.0, 1.5, 5.0, 19.0];
+    var rand = Math.random()*volumeAll.length | 0;
+    var volume = volumeAll[rand];
     Products.create({
       name: "water_" + i,
       price: price / 100,
-      amount: amount
+      amount: amount,
+      volume: volume
     });
   }
 }
@@ -55,6 +59,14 @@ require("./app/routes/auth.routes")(app);
 require("./app/routes/users.routes")(app);
 require("./app/routes/product.routes")(app);
 require("./app/routes/catalog.routes")(app);
+
+
+//Почему то не работает :(
+// Function to serve all static files
+// inside public directory.
+app.use(express.static('public'));
+app.use('/api/images', express.static('images'));
+
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8000;

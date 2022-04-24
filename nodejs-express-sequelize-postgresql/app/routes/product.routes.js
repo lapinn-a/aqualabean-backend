@@ -7,12 +7,8 @@ module.exports = app => {
     // Создать товар
     router.post("/add", products.create);
 
-    // Получить все товары
-    router.get("/all", products.findAll);
-
     // Получить товар по ID
     router.get("/:id", products.findOne);
-
 
     app.use("/api/product", router);
 };

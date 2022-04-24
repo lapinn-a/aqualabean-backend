@@ -12,6 +12,9 @@ module.exports = (sequelize, Sequelize) => {
         amount: {
             type: Sequelize.INTEGER
         },
+        volume: {
+            type: Sequelize.DECIMAL(4, 2)
+        },
     });
 
     return Product;
