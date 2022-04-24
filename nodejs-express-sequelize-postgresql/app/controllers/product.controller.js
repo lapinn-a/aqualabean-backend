@@ -1,4 +1,5 @@
 const db = require("../models");
+const fs = require('fs');
 const Product = db.product;
 const Op = db.Sequelize.Op;
 
@@ -45,26 +46,30 @@ exports.create = (req, res) => {
             });
         });
 };
-//Images URLs
-var images = [
-    { id: 1, url: ["https://aqualabean.ru/api/images/1/water-1.png","https://aqualabean.ru/api/images/2/water-2.png"]},
-    { id: 2, url: "https://aqualabean.ru/api/images/2/water-2.png"},
-    { id: 3, url: "https://aqualabean.ru/api/images/3/water-3.png"},
-    { id: 4, url: "https://aqualabean.ru/api/images/4/water-4.png"},
-    { id: 5, url: "https://aqualabean.ru/api/images/5/water-5.png"},
-    { id: 6, url: "https://aqualabean.ru/api/images/6/water-6.png"},
-    { id: 7, url: "https://aqualabean.ru/api/images/7/water-7.png"},
-    { id: 8, url: "https://aqualabean.ru/api/images/8/water-8.png"},
-    { id: 9, url: "https://aqualabean.ru/api/images/9/water-9.png"},
-    { id: 10, url: "https://aqualabean.ru/api/images/10/water-10.png"}
-]
 
-//Реализация сканирования файлов не работает!, так как проблемы get запросами файлов на localhost
-/*var fs = require('fs');
-var files = fs.readdirSync('/images');*/
+// Получить адреса изображений
+function getImages(id) {
+    const server = 'https://aqualabean.ru/api/images/';
 
+    return fs.promises.readdir('./images/' + id)
+        .then(files => {
+            return files.sort((a, b) => {
+                return a.split('.')[0].localeCompare(b.split('.')[0], undefined, {
+                    numeric: true,
+                    sensitivity: 'base',
+                    ignorePunctuation: true
+                });
+            }).map(file => server + id + '/' + file);
+        })
+        .catch(() => {
+            return [];
+        });
+}
+
+// deprecated
 // Получить все товары
 exports.findAll = async (req, res) => {
+    console.warn("using deprecated function findAll");
     const name = req.query.name;
     var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
 
@@ -78,7 +83,7 @@ exports.findAll = async (req, res) => {
                 data.setDataValue("images",[]);
             }
             else if(image){
-                data.setDataValue("images",image.url)
+                data.setDataValue("images",[image.url[0]])
             }
             //res.send(data);
         } else {
@@ -93,31 +98,11 @@ exports.findAll = async (req, res) => {
 // Получить товар по ID
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    const image = images[id-1];
-    Product.findByPk(id)
+    Promise.all([Product.findByPk(id), getImages(id)])
         .then(data => {
-            if(data) {
-                if((id-1) >= images.length) {
-                    res.status(200).send({
-                        id: data.id,
-                        name: data.name,
-                        price: data.price,
-                        amount: data.amount,
-                        volume: data.volume,
-                        images: []
-                    });
-                }
-                else if(image){
-                    res.status(200).send({
-                        id: data.id,
-                        name: data.name,
-                        price: data.price,
-                        amount: data.amount,
-                        volume: data.volume,
-                        images: image.url
-                    });
-                }
-                //res.send(data);
+            if (data[0]) {
+                data[0].setDataValue("images", data[1]);
+                res.send(data[0]);
             } else {
                 res.status(404).send({
                     message: "Product not found"
@@ -132,12 +117,11 @@ exports.findOne = (req, res) => {
 };
 
 // Получить каталог товаров
-exports.getCatalog = async (req, res) => {
+exports.getCatalog = (req, res) => {
     const where = {};
     var limit;
     var offset;
     var order = [['id', 'ASC']];
-    
 
     if (typeof req.query.limit != 'undefined' && typeof req.query.offset != 'undefined') {
         limit = req.query.limit;
@@ -151,8 +135,8 @@ exports.getCatalog = async (req, res) => {
         });
         return;
     }
-    
-    if(typeof req.query.sort != 'undefined' && typeof req.query.order != 'undefined'){
+
+    if (typeof req.query.sort != 'undefined' && typeof req.query.order != 'undefined') {
         if (req.query.order !== 'asc' && req.query.order !== 'desc') {
             res.status(400).send({
                 message: "Error in query parameters"
@@ -169,32 +153,24 @@ exports.getCatalog = async (req, res) => {
         order = [[req.query.sort, req.query.order]];
     }
 
-    /*Product.findAndCountAll({where, limit, offset, order})
+    Product.findAndCountAll({where, limit, offset, order})
         .then(data => {
-            res.send(data);
+            const promises = [];
+            data.rows.forEach((row) => {
+                promises.push(getImages(row.id)
+                    .then((images) => {
+                        row.setDataValue("images", images);
+                    })
+                );
+            });
+            Promise.all(promises)
+                .then(() => {
+                    res.send(data);
+                });
         })
         .catch(err => {
             res.status(500).send({
                 message: "Error while loading catalog"
             });
-        });*/
-
-    const { count, rows } = await Product.findAndCountAll({where, limit, offset, order});
-    rows.forEach((data) => {
-        if(data) {
-            const image = images[data.id - 1];
-            if((data.id - 1) >= images.length) {
-                data.setDataValue("images",[]);
-            }
-            else if(image){
-                data.setDataValue("images",image.url)
-            }
-            //res.send(data);
-        } else {
-            res.status(404).send({
-                message: "Product not found"
-            });
-        }
-    });
-    return res.json(rows);
+        });
 };

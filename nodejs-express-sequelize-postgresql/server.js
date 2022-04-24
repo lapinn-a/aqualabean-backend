@@ -33,30 +33,18 @@ function initial() {
     id: 0,
     name: "user"
   });
-  for (var i = 1; i <= 63; i++) {
+  for (var i = 1; i <= 1003; i++) {
     var price = Math.floor(Math.random() * (10000 - 2000 + 1)) + 2000;
     var amount = Math.floor(Math.random() * (500 - 1 + 1)) + 1;
     var volumeAll = [0.33, 0.5, 0.75, 1.0, 1.5, 5.0, 19.0];
     var rand = Math.random()*volumeAll.length | 0;
     var volume = volumeAll[rand];
-    var link = "https://aqualabean.ru/api/images/";
-    if (i <= 10) {
-      Products.create({
-        name: "water_" + i,
-        price: price / 100,
-        amount: amount,
-        volume: volume,
-        image: link + i + "/water-"+ i + ".png"
-      });
-    } else {
-      Products.create({
-        name: "water_" + i,
-        price: price / 100,
-        amount: amount,
-        volume: volume,
-        image: "image not found"
-      });
-    }
+    Products.create({
+      name: "water_" + i,
+      price: price / 100,
+      amount: amount,
+      volume: volume
+    });
   }
 }
 
