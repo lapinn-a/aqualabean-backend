@@ -78,14 +78,7 @@ exports.findAll = async (req, res) => {
 
     prod.forEach((data) => {
         if(data) {
-            const image = images[data.id - 1];
-            if((data.id - 1) >= images.length) {
-                data.setDataValue("images",[]);
-            }
-            else if(image){
-                data.setDataValue("images",[image.url[0]])
-            }
-            //res.send(data);
+            res.send(data);
         } else {
             res.status(404).send({
                 message: "Product not found"
