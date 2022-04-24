@@ -66,28 +66,6 @@ function getImages(id) {
         });
 }
 
-// deprecated
-// Получить все товары
-exports.findAll = async (req, res) => {
-    console.warn("using deprecated function findAll");
-    const name = req.query.name;
-    var condition = name ? { name: { [Op.iLike]: `%${name}%` } } : null;
-
-    const prod = await Product.findAll({ where: condition });
-    //prod.forEach((data) => data.setDataValue("images",[]));
-
-    prod.forEach((data) => {
-        if(data) {
-            res.send(data);
-        } else {
-            res.status(404).send({
-                message: "Product not found"
-            });
-        }
-    });
-    return res.json(prod);
-};
-
 // Получить товар по ID
 exports.findOne = (req, res) => {
     const id = req.params.id;
