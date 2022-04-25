@@ -1,8 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
     const Product = sequelize.define("product", {
-        /*code: {
-            type: Sequelize.INTEGER
-        },*/
         name: {
             type: Sequelize.STRING
         },
@@ -14,6 +11,15 @@ module.exports = (sequelize, Sequelize) => {
         },
         volume: {
             type: Sequelize.DECIMAL(4, 2)
+        },
+        ingredients: {
+            type: Sequelize.STRING
+        },
+        made: {
+            type: Sequelize.STRING
+        },
+        manufacturer: {
+            type: Sequelize.STRING
         },
     });
 
