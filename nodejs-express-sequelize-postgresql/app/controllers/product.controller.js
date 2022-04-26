@@ -68,7 +68,7 @@ function getImages(id) {
 
 // Получить товар по ID
 exports.findOne = (req, res) => {
-    const id = req.params.id;
+    const id = req.query.id;
     Promise.all([Product.findByPk(id), getImages(id)])
         .then(data => {
             if (data[0]) {

@@ -8,7 +8,7 @@ module.exports = app => {
     router.post("/add", products.create);
 
     // Получить товар по ID
-    router.get("/:id", products.findOne);
+    router.get("/", products.findOne);
 
     app.use("/api/product", router);
 };
