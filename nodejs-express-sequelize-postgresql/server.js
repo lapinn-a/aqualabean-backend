@@ -82,7 +82,6 @@ app.get("/api", (req, res) => {
   res.json({ message: "Welcome to aqualabean application." });
 });
 
-require("./app/routes/turorial.routes")(app);
 require("./app/routes/auth.routes")(app);
 require("./app/routes/users.routes")(app);
 require("./app/routes/product.routes")(app);
