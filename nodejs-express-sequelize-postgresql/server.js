@@ -87,6 +87,7 @@ require("./app/routes/auth.routes")(app);
 require("./app/routes/users.routes")(app);
 require("./app/routes/product.routes")(app);
 require("./app/routes/catalog.routes")(app);
+require("./app/routes/favorites.routes")(app);
 
 
 //Почему то не работает :(
