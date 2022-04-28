@@ -7,7 +7,7 @@ const Users = db.users;
 //Добавить в избранное
 exports.addFav = (req, res) => {
     const id = req.userId;
-    let pId = req.headers["fav-product"];
+    const pId = req.headers["fav-product"];
 
     Users.findByPk(id)
         .then(user => {
@@ -36,7 +36,7 @@ exports.addFav = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving user profile"
+                message: "Error when adding to favorites"
             });
         });
 
@@ -78,7 +78,7 @@ exports.getFav = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving user profile"
+                message: "Error when adding to favorites"
             });
         });
 };
@@ -87,7 +87,7 @@ exports.getFav = (req, res) => {
 //Убрать из избранного
 exports.delFav = (req, res) => {
     const id = req.userId;
-    let pId = req.headers["fav-product"];
+    const pId = req.headers["fav-product"];
 
     Users.findByPk(id)
         .then(user => {
@@ -123,7 +123,7 @@ exports.delFav = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving user profile"
+                message: "Error when adding to favorites"
             });
         });
 };
