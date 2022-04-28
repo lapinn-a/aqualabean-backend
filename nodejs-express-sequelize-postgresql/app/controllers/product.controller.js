@@ -135,7 +135,7 @@ exports.getCatalog = (req, res) => {
         }
     }
 
-    Product.findAndCountAll({where, limit, offset, order})
+    Product.findAndCountAll(parameters)
         .then(data => {
             const promises = [];
             data.rows.forEach((row) => {
