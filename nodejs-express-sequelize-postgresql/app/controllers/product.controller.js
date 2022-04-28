@@ -128,7 +128,6 @@ exports.getCatalog = (req, res) => {
 
     for(const filter in req.query){
         if(req.query.hasOwnProperty(filter) && typeof Product.getAttributes()[filter] !== 'undefined'){
-            console.log(Product.getAttributes()[filter]);
             parameters.where[filter] = {
                 [Op.iLike]: `%${req.query[filter]}%`
             }
