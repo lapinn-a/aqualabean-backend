@@ -124,6 +124,17 @@ exports.getCatalog = (req, res) => {
         order = [[req.query.sort, req.query.order]];
     }
 
+    var parameters = {where, limit, offset, order};
+
+    for(const filter in req.query){
+        if(req.query.hasOwnProperty(filter) && typeof Product.getAttributes()[filter] !== 'undefined'){
+            console.log(Product.getAttributes()[filter]);
+            parameters.where[filter] = {
+                [Op.iLike]: `%${req.query[filter]}%`
+            }
+        }
+    }
+
     Product.findAndCountAll({where, limit, offset, order})
         .then(data => {
             const promises = [];
