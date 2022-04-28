@@ -7,7 +7,7 @@ const Users = db.users;
 //Добавить в избранное
 exports.addFav = (req, res) => {
     const id = req.userId;
-    const pId = req.headers["fav-product"];
+    const pId = req.body.id;
 
     Users.findByPk(id)
         .then(user => {
@@ -87,7 +87,7 @@ exports.getFav = (req, res) => {
 //Убрать из избранного
 exports.delFav = (req, res) => {
     const id = req.userId;
-    const pId = req.headers["fav-product"];
+    const pId = req.body.id;
 
     Users.findByPk(id)
         .then(user => {
@@ -105,7 +105,7 @@ exports.delFav = (req, res) => {
                             });
                         } else {
                             res.send({
-                                message: `Cannot delete Favorite. Maybe Tutorial was not found!`
+                                message: `Cannot delete Favorite. Maybe Favorite was not found!`
                             });
                         }
                     })
