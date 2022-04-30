@@ -17,82 +17,34 @@ exports.addCart = (req, res) => {
                 //Проверка на Повторное добавление товара
                 Carts.findByPk(productId).then(cartProd => {
                     if (cartProd) {
-                        const newAmount = amount + cartProd.amount;
-                        Carts.destroy({
+                        //const newAmount = parseInt(amount) + parseInt(cartProd.amount);
+                        Carts.update(req.body, {
                             where: {
                                 userId: id,
                                 productId: cartProd.productId,
-                                amount: cartProd.amount
+                                amount: amount + cartProd.amount
                             }
-                        })
-                            .then(num => {
-                                if (num == 1) {
-
-                                    let id = productId;
-                                    //Проверка на наличие количества товара
-                                    Products.findByPk(id).then(prod => {
-                                        if(prod) {
-                                            if (amount <= prod.amount) {
-
-                                                const product = {
-                                                    userId: user.id,
-                                                    productId: productId,
-                                                    amount: newAmount
-                                                };
-
-                                                Carts.create(product)
-                                                    .then(data => {
-                                                        res.send(data);
-                                                    })
-                                                    .catch(err => {
-                                                        res.status(500).send({
-                                                            message:
-                                                                err.message || "Cart add error"
-                                                        });
-                                                    });
-
-
-                                            }else {
-                                                res.status(404).send({
-                                                    message: "Amount not available"
-                                                });
-                                            }
-
-                                        }
-                                        else {
-                                            res.status(404).send({
-                                                message: "Product not found"
-                                            });
-                                        }
-
-                                    }).catch(err => {
-                                        res.status(500).send({
-                                            message: "Error when find product"
-                                        });
-                                    });
-
-                                } else {
-                                    res.send({
-                                        message: `Cannot delete product in Cart. Maybe product was not found!`
-                                    });
-                                }
-                            })
-                            .catch(err => {
-                                res.status(500).send({
-                                    message: "Could not delete product in cart"
+                        }).then(cartProd => {
+                            if (cartProd == 1) {
+                                res.send({
+                                    message: "Cart was updated successfully."
                                 });
+                            } else {
+                                res.send({
+                                    message: `Cannot update Cart`
+                                });
+                            }
+                        }).catch(err => {
+                            res.status(500).send({
+                                message: "Error updating cart product"
                             });
-
-
-
-
-
+                        });
 
                     } else {
                         let id = productId;
                         //Проверка на наличие количества товара
                         Products.findByPk(id).then(prod => {
-                            if(prod) {
+                            if (prod) {
                                 if (amount <= prod.amount) {
 
                                     const product = {
@@ -113,14 +65,13 @@ exports.addCart = (req, res) => {
                                         });
 
 
-                                }else {
+                                } else {
                                     res.status(404).send({
                                         message: "Amount not available"
                                     });
                                 }
 
-                            }
-                            else {
+                            } else {
                                 res.status(404).send({
                                     message: "Product not found"
                                 });
@@ -138,6 +89,7 @@ exports.addCart = (req, res) => {
                     });
                 });
 
+            }
                 //Внизу код рабочий без проверки на повторы
 
                 /*let id = productId;
@@ -185,7 +137,7 @@ exports.addCart = (req, res) => {
 
 
 
-            } else {
+             else {
                 res.status(404).send({
                     message: "User not found"
                 });
