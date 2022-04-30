@@ -197,7 +197,7 @@ exports.getCart = (req, res) => {
 exports.delCart = (req, res) => {
     const id = req.userId;
     const pId = req.body.id;
-    const pAmount = req.body.amount;
+    //const pAmount = req.body.amount;
 
     Users.findByPk(id)
         .then(user => {
@@ -206,7 +206,7 @@ exports.delCart = (req, res) => {
                     where: {
                         userId: id,
                         productId: pId,
-                        amount: pAmount
+                        //amount: pAmount
                     }
                 })
                     .then(num => {
