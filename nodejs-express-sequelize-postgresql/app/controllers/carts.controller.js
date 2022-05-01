@@ -22,9 +22,10 @@ exports.addCart = (req, res) => {
                         //Проверка на наличие количества товара
                         Products.findByPk(id).then(prod => {
                             if (prod) {
-                                if (amount <= prod.amount) {
-
-                                    Carts.update(req.body, {
+                                if ((parseInt(amount) + parseInt(cartProd.amount)) <= prod.amount) {
+                                    //Добавляем к текущему количеству
+                                   // Carts.update(req.body, {
+                                    Carts.update({ amount : (parseInt(amount) + parseInt(cartProd.amount)) }, {
                                         where: {
                                             userId: user.id,
                                             productId: cartProd.productId
