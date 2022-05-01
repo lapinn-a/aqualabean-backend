@@ -7,4 +7,6 @@ module.exports = function(app) {
     app.get("/api/cart", [auth.verifyToken], carts.getCart);
     //Удалить из корзины
     app.delete("/api/cart", [auth.verifyToken], carts.delCart);
+    //Обновить количество
+    app.put("/api/cart", [auth.verifyToken], carts.updateCart);
 };

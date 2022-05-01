@@ -15,28 +15,52 @@ exports.addCart = (req, res) => {
         .then(user => {
             if(user) {
                 //Проверка на Повторное добавление товара
-                Carts.findByPk(productId).then(cartProd => {
+                Carts.findOne({ where: { productId: productId } }).then(cartProd => {
                     if (cartProd) {
-                        //const newAmount = parseInt(amount) + parseInt(cartProd.amount);
-                        Carts.update(req.body, {
-                            where: {
-                                userId: id,
-                                productId: cartProd.productId,
-                                amount: amount + cartProd.amount
-                            }
-                        }).then(cartProd => {
-                            if (cartProd == 1) {
-                                res.send({
-                                    message: "Cart was updated successfully."
-                                });
+
+                        let id = productId;
+                        //Проверка на наличие количества товара
+                        Products.findByPk(id).then(prod => {
+                            if (prod) {
+                                if (amount <= prod.amount) {
+
+                                    Carts.update(req.body, {
+                                        where: {
+                                            userId: user.id,
+                                            productId: cartProd.productId
+                                        }
+                                    }).then(cartProd => {
+                                        if (cartProd == 1) {
+                                            res.send({
+                                                message: "Cart was updated successfully."
+                                            });
+                                        } else {
+                                            res.send({
+                                                message: `Cannot update Cart`
+                                            });
+                                        }
+                                    }).catch(err => {
+                                        res.status(500).send({
+                                            message: "Error updating cart product"
+                                        });
+                                    });
+
+
+                                } else {
+                                    res.status(404).send({
+                                        message: "Amount not available"
+                                    });
+                                }
+
                             } else {
-                                res.send({
-                                    message: `Cannot update Cart`
+                                res.status(404).send({
+                                    message: "Product not found"
                                 });
                             }
+
                         }).catch(err => {
                             res.status(500).send({
-                                message: "Error updating cart product"
+                                message: "Error when find product"
                             });
                         });
 
@@ -90,52 +114,6 @@ exports.addCart = (req, res) => {
                 });
 
             }
-                //Внизу код рабочий без проверки на повторы
-
-                /*let id = productId;
-                //Проверка на наличие количества товара
-                Products.findByPk(id).then(prod => {
-                    if(prod) {
-                        if (amount <= prod.amount) {
-
-                            const product = {
-                                userId: user.id,
-                                productId: productId,
-                                amount: amount
-                            };
-
-                            Carts.create(product)
-                                .then(data => {
-                                    res.send(data);
-                                })
-                                .catch(err => {
-                                    res.status(500).send({
-                                        message:
-                                            err.message || "Cart add error"
-                                    });
-                                });
-
-
-                        }else {
-                            res.status(404).send({
-                                message: "Amount not available"
-                            });
-                        }
-
-                    }
-                    else {
-                        res.status(404).send({
-                            message: "Product not found"
-                        });
-                    }
-
-                }).catch(err => {
-                    res.status(500).send({
-                        message: "Error when find product"
-                    });
-                });*/
-
-
 
              else {
                 res.status(404).send({
@@ -197,7 +175,6 @@ exports.getCart = (req, res) => {
 exports.delCart = (req, res) => {
     const id = req.userId;
     const pId = req.body.id;
-    //const pAmount = req.body.amount;
 
     Users.findByPk(id)
         .then(user => {
@@ -206,7 +183,6 @@ exports.delCart = (req, res) => {
                     where: {
                         userId: id,
                         productId: pId,
-                        //amount: pAmount
                     }
                 })
                     .then(num => {
@@ -235,6 +211,86 @@ exports.delCart = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message: "Error when delete product to cart"
+            });
+        });
+};
+
+
+//Обновить количество
+exports.updateCart = (req, res) => {
+    let id = req.userId;
+    const productId = req.body.productId;
+    const amount = req.body.amount;
+
+    Users.findByPk(id)
+        .then(user => {
+            if(user) {
+                Carts.findOne({ where: { productId: productId } }).then(cartProd => {
+                    if (cartProd) {
+                        let id = productId;
+                        //Проверка на наличие количества товара
+                        Products.findByPk(id).then(prod => {
+                            if (prod) {
+                                if (amount <= prod.amount) {
+                                    Carts.update(req.body, {
+                                        where: {
+                                            userId: user.id,
+                                            productId: cartProd.productId
+                                        }
+                                    }).then(cartProd => {
+                                        if (cartProd == 1) {
+                                            res.send({
+                                                message: "Cart was updated successfully."
+                                            });
+                                        } else {
+                                            res.send({
+                                                message: `Cannot update Cart`
+                                            });
+                                        }
+                                    }).catch(err => {
+                                        res.status(500).send({
+                                            message: "Error updating cart product"
+                                        });
+                                    });
+
+                                } else {
+                                    res.status(404).send({
+                                        message: "Amount not available"
+                                    });
+                                }
+
+                            } else {
+                                res.status(404).send({
+                                    message: "Product not found"
+                                });
+                            }
+
+                        }).catch(err => {
+                            res.status(500).send({
+                                message: "Error when find product"
+                            });
+                        });
+
+                    } else {
+                        res.send({
+                            message: `Cannot update Cart, product not found`
+                        });
+                    }
+                }).catch(err => {
+                    res.status(500).send({
+                        message: "Error when update product to cart"
+                    });
+                });
+
+            } else {
+                res.status(404).send({
+                    message: "User not found"
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error when update product to cart"
             });
         });
 };
