@@ -23,6 +23,7 @@ db.users = require("./users.model.js")(sequelize, Sequelize);
 db.roles = require("./role.model.js")(sequelize, Sequelize);
 db.product = require("./product.model.js")(sequelize, Sequelize);
 db.favorites = require("./favorites.model")(sequelize, Sequelize);
+db.carts = require("./carts.model")(sequelize, Sequelize);
 
 db.roles.belongsToMany(db.users, {
   through: "user_roles", //название соед таблиц
@@ -34,6 +35,7 @@ db.users.belongsToMany(db.roles, {
   foreignKey: "userId",
   otherKey: "roleId"
 });
+//Для избранного
 db.users.belongsToMany(db.product, {
   through: "favorites",
   foreignKey: "userId",
@@ -44,7 +46,17 @@ db.product.belongsToMany(db.users, {
   foreignKey: "productId",
   otherKey: "userId"
 });
-
+//Для корзины
+db.users.belongsToMany(db.product, {
+  through: "carts",
+  foreignKey: "userId",
+  otherKey: "productId"
+});
+db.product.belongsToMany(db.users, {
+  through: "carts",
+  foreignKey: "productId",
+  otherKey: "userId"
+});
 
 db.ROLES = ["user"];
 

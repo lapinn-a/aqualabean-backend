@@ -1,6 +1,5 @@
 const db = require("../models");
 const Favorites = db.favorites;
-const Products = db.favorites;
 const Users = db.users;
 
 
@@ -123,7 +122,7 @@ exports.delFav = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error when adding to favorites"
+                message: "Error when del to favorites"
             });
         });
 };
