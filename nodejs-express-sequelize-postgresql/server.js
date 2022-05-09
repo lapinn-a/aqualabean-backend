@@ -98,7 +98,12 @@ app.use('/api/images', express.static('images'));
 
 
 // set port, listen for requests
-const PORT = process.env.PORT || 8000;
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 8000;
+} else {
+  const PORT = 0;
+}
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
