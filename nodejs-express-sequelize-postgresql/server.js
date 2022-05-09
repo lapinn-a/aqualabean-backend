@@ -35,13 +35,14 @@ function initial() {
     name: "user"
   });
   
+  var max = 0;
   if (process.env.NODE_ENV !== 'test') {
-    const max = 1003;
+    max = 1003;
   } else {
-    const max = 13;
+    max = 13;
   }
   
-  for (var i = 1; i <= 1003; i++) {
+  for (var i = 1; max <= 1003; i++) {
     var price = Math.floor(Math.random() * (10000 - 2000 + 1)) + 2000;
     var amount = Math.floor(Math.random() * (500 - 1 + 1)) + 1;
     var volumeAll = [0.33, 0.5, 0.75, 1.0, 1.5, 5.0, 19.0];
@@ -105,10 +106,11 @@ app.use('/api/images', express.static('images'));
 
 
 // set port, listen for requests
+var PORT;
 if (process.env.NODE_ENV !== 'test') {
-  const PORT = process.env.PORT || 8000;
+  PORT = process.env.PORT || 8000;
 } else {
-  const PORT = 0;
+  PORT = 0;
 }
 
 app.listen(PORT, () => {
