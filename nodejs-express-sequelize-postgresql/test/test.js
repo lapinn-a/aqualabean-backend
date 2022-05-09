@@ -12,3 +12,8 @@ describe("Test the root path", () => {
             });
     });
 });
+
+
+afterAll(() => {
+  app.close();
+});
