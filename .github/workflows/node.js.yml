@@ -7,6 +7,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    
+    env:
+      PORT: 8001
 
     steps:
     - uses: actions/checkout@v1
