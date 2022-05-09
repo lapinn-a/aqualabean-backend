@@ -34,6 +34,13 @@ function initial() {
     id: 0,
     name: "user"
   });
+  
+  if (process.env.NODE_ENV !== 'test') {
+    const max = 1003;
+  } else {
+    const max = 13;
+  }
+  
   for (var i = 1; i <= 1003; i++) {
     var price = Math.floor(Math.random() * (10000 - 2000 + 1)) + 2000;
     var amount = Math.floor(Math.random() * (500 - 1 + 1)) + 1;
