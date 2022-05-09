@@ -4,7 +4,7 @@
   "description": "Node.js Rest Apis with Express, Sequelize & PostgreSQL.",
   "main": " server.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test jest --testTimeout=10000"
+    "test": "cross-env NODE_ENV=test jest --no-cache  --detectOpenHandles --runInBand --forceExit --testTimeout=10000"
   },
   "jest": {
     "testEnvironment": "node",
