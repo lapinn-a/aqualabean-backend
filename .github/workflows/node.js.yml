@@ -7,12 +7,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env:
-      PG_PASS: ${{ secrets.PG_PASS }}
-      DATABASE_URL: postgresql://postgres:${{ secrets.SECRET_PASSWORD }}@postgres/postgres
-      DJANGO_SETTINGS_MODULE: app_name.settings.dev
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      PORT: 8000
 
     steps:
     - uses: actions/checkout@v1
