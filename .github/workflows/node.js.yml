@@ -20,4 +20,4 @@ jobs:
     - name: Check logs
       run: docker-compose logs
     - name: Run test suite
-      run: docker exec nodejs npm test
+      run: docker exec CI=true nodejs npm test
