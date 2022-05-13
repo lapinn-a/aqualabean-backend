@@ -24,10 +24,21 @@ const Roles = db.roles;
 const Products = db.product;
 db.sequelize.sync();
  // drop the table if it already exists
-/*db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
   console.log("Drop and re-sync db.");
   initial();
-});*/
+});
+
+// Set port and sync database
+var PORT;
+if (process.env.NODE_ENV !== 'test') {
+  db.sequelize.sync();
+  PORT = process.env.PORT || 8000;
+} else {
+  console.log("Drop and re-sync db.");
+  initial();
+  PORT = 0;
+}
 
 function initial() {
   Roles.create({
@@ -97,22 +108,12 @@ require("./app/routes/catalog.routes")(app);
 require("./app/routes/favorites.routes")(app);
 require("./app/routes/carts.routes")(app);
 
-
-//Почему то не работает :(
 // Function to serve all static files
 // inside public directory.
 app.use(express.static('public'));
 app.use('/api/images', express.static('images'));
 
-
-// set port, listen for requests
-var PORT;
-if (process.env.NODE_ENV !== 'test') {
-  PORT = process.env.PORT || 8000;
-} else {
-  PORT = 0;
-}
-
+// Listen for requests
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
