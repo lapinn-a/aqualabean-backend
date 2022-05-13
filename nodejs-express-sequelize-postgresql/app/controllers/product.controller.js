@@ -158,3 +158,7 @@ exports.getCatalog = (req, res) => {
             });
         });
 };
+
+exports.getImages = (id) => {
+    return getImages(id);
+}

@@ -37,6 +37,7 @@ db.users.belongsToMany(db.roles, {
 });
 //Для избранного
 db.users.belongsToMany(db.product, {
+  as: "favorites1",
   through: "favorites",
   foreignKey: "userId",
   otherKey: "productId"
@@ -48,6 +49,7 @@ db.product.belongsToMany(db.users, {
 });
 //Для корзины
 db.users.belongsToMany(db.product, {
+  as: "carts1",
   through: "carts",
   foreignKey: "userId",
   otherKey: "productId"

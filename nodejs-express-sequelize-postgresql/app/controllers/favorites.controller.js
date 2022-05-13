@@ -1,7 +1,8 @@
 const db = require("../models");
 const Favorites = db.favorites;
 const Users = db.users;
-
+const Products = db.product;
+const productsController = require("../controllers/product.controller");
 
 //Добавить в избранное
 exports.addFav = (req, res) => {
@@ -49,13 +50,32 @@ exports.getFav = (req, res) => {
         .then(user => {
             if(user) {
 
-                Favorites.findAndCountAll({
+                Users.findOne({
                     where: {
-                        userId: user.id
+                        id: user.id
+                    },
+                    include: {
+                        model: Products,
+                        as: 'favorites1',
+                        through: { attributes: [] }
                     }
                 }).then(fav => {
                     if (fav) {
-                        res.status(200).send(fav.rows);
+                        const promises = [];
+                        fav.favorites1.forEach((row) => {
+                            promises.push(productsController.getImages(row.id)
+                                .then((images) => {
+                                    if(images.length > 1){
+                                        images.length = 1;
+                                    }
+                                    row.setDataValue("images", images);
+                                })
+                            );
+                        });
+                        Promise.all(promises)
+                            .then(() => {
+                                res.send(fav.favorites1);
+                            });
                     } else {
                         res.status(404).send({
                             message: "Favorites not found"
@@ -66,9 +86,6 @@ exports.getFav = (req, res) => {
                         message: "Error get Favorites"
                     });
                 });
-
-               // const prodIds = fav.rows;
-
             } else {
                 res.status(404).send({
                     message: "User not found"

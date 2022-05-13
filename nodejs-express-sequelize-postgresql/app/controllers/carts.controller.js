@@ -1,4 +1,5 @@
 const db = require("../models");
+const productsController = require("./product.controller");
 const Carts = db.carts;
 const Users = db.users;
 const Products = db.product;
@@ -138,13 +139,34 @@ exports.getCart = (req, res) => {
         .then(user => {
             if(user) {
 
-                Carts.findAndCountAll({
+                Users.findOne({
                     where: {
-                        userId: user.id
+                        id: user.id
+                    },
+                    include: {
+                        model: Products,
+                        as: 'carts1',
+                        through: { attributes: ['amount'] }
                     }
                 }).then(cart => {
                     if (cart) {
-                        res.status(200).send(cart.rows);
+                        const promises = [];
+                        cart.carts1.forEach((row) => {
+                            promises.push(productsController.getImages(row.id)
+                                .then((images) => {
+                                    if(images.length > 1){
+                                        images.length = 1;
+                                    }
+                                    row.setDataValue("images", images);
+                                })
+                            );
+                            row.setDataValue("amount", row.carts.amount);
+                            row.setDataValue("carts", undefined);
+                        });
+                        Promise.all(promises)
+                            .then(() => {
+                                res.send(cart.carts1);
+                            });
                     } else {
                         res.status(404).send({
                             message: "Cart not found"
