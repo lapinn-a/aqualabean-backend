@@ -26,12 +26,12 @@ const Products = db.product;
 // Set port and sync database
 var PORT;
 if (process.env.NODE_ENV !== 'test') {
-  db.sequelize.sync();
   PORT = process.env.PORT || 8000;
+  db.sequelize.sync();
 } else {
+  PORT = 0;
   console.log("Drop and re-sync db.");
   initial();
-  PORT = 0;
 }
 
 function initial() {
