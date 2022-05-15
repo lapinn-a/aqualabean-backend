@@ -1,6 +1,9 @@
 const db = require("../models");
 const fs = require('fs');
+const jwt = require("jsonwebtoken");
+const config = require("../config/auth.config");
 const Product = db.product;
+const Users = db.users;
 const Op = db.Sequelize.Op;
 
 // Создать и сохранить товар
@@ -66,13 +69,37 @@ function getImages(id) {
         });
 }
 
+// Получить параметр для объединения
+function getInclude(token){
+    const include = {
+        model: Users,
+        as: 'favorites1',
+        required: false,
+        through: {attributes: []},
+        where: {id: 0}
+    };
+    if(token){
+        jwt.verify(token, config.secret, (err, decoded) => {
+            if (err) {
+                return;
+            }
+            include.where.id = decoded.id;
+        });
+    }
+    return include;
+}
+
 // Получить товар по ID
 exports.findOne = (req, res) => {
     const id = req.query.id;
-    Promise.all([Product.findByPk(id), getImages(id)])
+    const token = req.headers["x-access-token"];
+    const include = getInclude(token);
+    Promise.all([Product.findByPk(id, {include: include}), getImages(id)])
         .then(data => {
             if (data[0]) {
                 data[0].setDataValue("images", data[1]);
+                data[0].setDataValue("favorite", data[0].favorites1.length === 1);
+                data[0].setDataValue("favorites1", undefined);
                 res.send(data[0]);
             } else {
                 res.status(404).send({
@@ -93,6 +120,8 @@ exports.getCatalog = (req, res) => {
     var limit;
     var offset;
     var order = [['id', 'ASC']];
+    const token = req.headers["x-access-token"];
+    const include = getInclude(token);
 
     if (typeof req.query.limit != 'undefined' && typeof req.query.offset != 'undefined') {
         limit = req.query.limit;
@@ -124,7 +153,7 @@ exports.getCatalog = (req, res) => {
         order = [[req.query.sort, req.query.order]];
     }
 
-    var parameters = {where, limit, offset, order};
+    var parameters = {where, limit, offset, order, include};
 
     for(const filter in req.query){
         if(req.query.hasOwnProperty(filter) && typeof Product.getAttributes()[filter] !== 'undefined'){
@@ -146,6 +175,8 @@ exports.getCatalog = (req, res) => {
                         row.setDataValue("images", images);
                     })
                 );
+                row.setDataValue("favorite", row.favorites1.length === 1);
+                row.setDataValue("favorites1", undefined);
             });
             Promise.all(promises)
                 .then(() => {

@@ -43,6 +43,7 @@ db.users.belongsToMany(db.product, {
   otherKey: "productId"
 });
 db.product.belongsToMany(db.users, {
+  as: "favorites1",
   through: "favorites",
   foreignKey: "productId",
   otherKey: "userId"
