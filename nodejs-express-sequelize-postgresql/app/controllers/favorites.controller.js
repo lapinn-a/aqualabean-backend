@@ -19,13 +19,15 @@ exports.addFav = (req, res) => {
 
                 Favorites.create(favProduct)
                     .then(data => {
-                        res.send(data);
+                        //res.send(data);
+                        getFav(req, res);
                     })
                     .catch(err => {
-                        res.status(500).send({
+                        /*res.status(500).send({
                             message:
-                                err.message || "Favorite add error"
-                        });
+                                err.message + "Favorite add error"
+                        });*/
+                        getFav(req, res);
                     });
 
             } else {
@@ -44,6 +46,10 @@ exports.addFav = (req, res) => {
 
 //Посмотреть избранное
 exports.getFav = (req, res) => {
+    return getFav(req, res);
+}
+
+function getFav(req, res) {
     const id = req.userId;
 
      Users.findByPk(id)
@@ -116,13 +122,12 @@ exports.delFav = (req, res) => {
                 })
                     .then(num => {
                         if (num == 1) {
-                            res.send({
+                            /*res.send({
                                 message: "Favorite was deleted successfully!"
-                            });
+                            });*/
+                            getFav(req, res);
                         } else {
-                            res.send({
-                                message: `Cannot delete Favorite. Maybe Favorite was not found!`
-                            });
+                            getFav(req, res);
                         }
                     })
                     .catch(err => {

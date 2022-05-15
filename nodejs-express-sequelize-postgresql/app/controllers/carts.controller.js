@@ -49,7 +49,7 @@ exports.addCart = (req, res) => {
 
 
                                 } else {
-                                    res.status(404).send({
+                                    res.status(400).send({
                                         message: "Amount not available"
                                     });
                                 }
@@ -81,18 +81,20 @@ exports.addCart = (req, res) => {
 
                                     Carts.create(product)
                                         .then(data => {
-                                            res.send(data);
+                                            //res.send(data);
+                                            getCart(req, res);
                                         })
                                         .catch(err => {
-                                            res.status(500).send({
+                                            /*res.status(500).send({
                                                 message:
                                                     err.message || "Cart add error"
-                                            });
+                                            });*/
+                                            getCart(req, res);
                                         });
 
 
                                 } else {
-                                    res.status(404).send({
+                                    res.status(400).send({
                                         message: "Amount not available"
                                     });
                                 }
@@ -133,6 +135,10 @@ exports.addCart = (req, res) => {
 
 //Посмотреть корзину
 exports.getCart = (req, res) => {
+    return getCart(req, res);
+}
+
+function getCart(req, res) {
     const id = req.userId;
 
     Users.findByPk(id)
@@ -209,7 +215,7 @@ exports.delCart = (req, res) => {
                     }
                 })
                     .then(num => {
-                        if (num == 1) {
+                        /*if (num == 1) {
                             res.send({
                                 message: "Cart product was deleted successfully!"
                             });
@@ -217,7 +223,8 @@ exports.delCart = (req, res) => {
                             res.send({
                                 message: `Cannot delete product in Cart. Maybe product was not found!`
                             });
-                        }
+                        }*/
+                        getCart(req, res);
                     })
                     .catch(err => {
                         res.status(500).send({
@@ -261,7 +268,7 @@ exports.updateCart = (req, res) => {
                                             productId: cartProd.productId
                                         }
                                     }).then(cartProd => {
-                                        if (cartProd == 1) {
+                                        /*if (cartProd == 1) {
                                             res.send({
                                                 message: "Cart was updated successfully."
                                             });
@@ -269,7 +276,8 @@ exports.updateCart = (req, res) => {
                                             res.send({
                                                 message: `Cannot update Cart`
                                             });
-                                        }
+                                        }*/
+                                        getCart(req, res);
                                     }).catch(err => {
                                         res.status(500).send({
                                             message: "Error updating cart product"
@@ -277,7 +285,7 @@ exports.updateCart = (req, res) => {
                                     });
 
                                 } else {
-                                    res.status(404).send({
+                                    res.status(400).send({
                                         message: "Amount not available"
                                     });
                                 }
