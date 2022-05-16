@@ -6,28 +6,28 @@ const users = db.users;
 checkRequiredFieldsExists = (req, res, next) => {
     if (!req.body.name) {
         res.status(400).send({
-            message: "Failed! Name not provided"
+            message: "Ошибка! Имя не указано"
         });
         return;
     }
 
     if (!req.body.phone) {
         res.status(400).send({
-            message: "Failed! Phone not provided"
+            message: "Ошибка! Телефон не указан"
         });
         return;
     }
 
     if (!req.body.email) {
         res.status(400).send({
-            message: "Failed! Email not provided"
+            message: "Ошибка! Электронная почта не указана"
         });
         return;
     }
 
     if (!req.body.password) {
         res.status(400).send({
-            message: "Failed! Password not provided"
+            message: "Ошибка! Пароль не указан"
         });
         return;
     }
@@ -42,7 +42,7 @@ checkDuplicatePhone = (req, res, next) => {
     }).then(user => {
         if (user) {
             res.status(400).send({
-                message: "Failed! Phone is already in use"
+                message: "Ошибка! Телефон уже используется"
             });
             return;
         }
@@ -58,7 +58,7 @@ checkDuplicateEmail = (req, res, next) => {
     }).then(user => {
         if (user) {
             res.status(400).send({
-                message: "Failed! Email is already in use"
+                message: "Ошибка! Почтовый ящик уже используется"
             });
             return;
         }
@@ -69,7 +69,7 @@ checkDuplicateEmail = (req, res, next) => {
 checkName = (req, res, next) => {
     if(req.body.name && req.body.name === '') {
         res.status(400).send({
-            message: "Failed! Name cannot be empty"
+            message: "Ошибка! Имя не может быть пустым"
         });
         return;
     }
@@ -81,7 +81,7 @@ checkRolesExisted = (req, res, next) => {
         for (let i = 0; i < req.body.roles.length; i++) {
             if (!ROLES.includes(req.body.roles[i])) {
                 res.status(400).send({
-                    message: "Failed! Role does not exist"
+                    message: "Ошибка! Роль не существует"
                 });
                 return;
             }
@@ -93,7 +93,7 @@ checkRolesExisted = (req, res, next) => {
 checkPhone = (req, res, next) => {
     if (req.body.phone && req.body.phone.search(/\+7\(\d{3}\)\d{3}-\d{2}-\d{2}/) !== 0) {
         res.status(400).send({
-            message: "Failed! Phone format wrong"
+            message: "Ошибка! Неверный формат телефона"
         });
         return;
     }
@@ -103,7 +103,7 @@ checkPhone = (req, res, next) => {
 checkEmail = (req, res, next) => {
     if (req.body.email && !validator.validate(req.body.email)) {
         res.status(400).send({
-            message: "Failed! Email format wrong"
+            message: "Ошибка! Неправильный формат электронной почты"
         });
         return;
     }
@@ -114,7 +114,7 @@ checkPassword = (req, res, next) => {
     const regExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$");
     if (req.body.password && !regExp.test(req.body.password)) {
         res.status(400).send({
-            message: "Failed! Password format incorrect"
+            message: "Ошибка! Неверный формат пароля"
         });
         return;
     }

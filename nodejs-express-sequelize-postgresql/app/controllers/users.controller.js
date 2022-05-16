@@ -177,13 +177,13 @@ exports.userBoard = (req, res) => {
                 });
             } else {
                 res.status(404).send({
-                    message: "User not found"
+                    message: "Пользователь не найден"
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving user profile"
+                message: "Ошибка при получении профиля пользователя"
             });
         });
 };
@@ -201,17 +201,17 @@ exports.updateData = (req, res) => {
         .then(num => {
             if (num == 1) {
                 res.send({
-                    message: "User data was updated successfully."
+                    message: "Пользовательские данные успешно обновлены."
                 });
             } else {
                 res.status(400).send({
-                    message: `Cannot update user data. Maybe user data was not found or update request is empty!`
+                    message: `Не удается обновить данные пользователя. Возможно данные пользователя не найдены или запрос на обновление пуст!`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error updating user"
+                message: "Ошибка обновления пользователя"
             });
         });
 };
