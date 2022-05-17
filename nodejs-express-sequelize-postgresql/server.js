@@ -31,7 +31,6 @@ if (process.env.NODE_ENV !== 'test') {
 } else {
     PORT = 0;
     console.log("Drop and re-sync db.");
-    db.sequelize.sync({ force: true });
     initial();
 }
 
