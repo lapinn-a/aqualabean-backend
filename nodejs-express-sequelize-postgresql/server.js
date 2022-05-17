@@ -8,7 +8,7 @@ const app = express();
 Error.stackTraceLimit = 50;
 
 var corsOptions = {
-  origin: "http://localhost:8081"
+    origin: "http://localhost:8081"
 };
 
 app.use(cors(corsOptions));
@@ -108,7 +108,7 @@ function initial() {
 
 // simple route
 app.get("/api", (req, res) => {
-  res.json({ message: "Добро пожаловать в приложение Aqualabean!" });
+    res.json({ message: "Добро пожаловать в приложение Aqualabean!" });
 });
 
 require("./app/routes/auth.routes")(app);
@@ -125,7 +125,7 @@ app.use('/api/images', express.static('images'));
 
 // Listen for requests
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+    console.log(`Server is running on port ${PORT}.`);
 });
 
 module.exports = app;
