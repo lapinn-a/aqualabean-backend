@@ -81,7 +81,6 @@ exports.addCart = (req, res) => {
 
                                     Carts.create(product)
                                         .then(data => {
-                                            //res.send(data);
                                             getCart(req, res);
                                         })
                                         .catch(err => {
