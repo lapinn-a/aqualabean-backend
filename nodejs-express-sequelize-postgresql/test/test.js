@@ -1,8 +1,8 @@
 const request = require("supertest");
 const app = require("../server");
 
-beforeEach(async () => {
-  await new Promise((r) => setTimeout(r, 1000));
+beforeAll(async () => {
+  await new Promise((r) => setTimeout(r, 5000));
 });
 
 describe("Test the root api path", () => {
