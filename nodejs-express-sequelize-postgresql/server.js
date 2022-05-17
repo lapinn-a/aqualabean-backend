@@ -70,9 +70,21 @@ function initial() {
         var MadeManufacturerAll = [{ made: "Россия, г. Москва", manufacturer: "Шишкин лес", name: ["Шишкин лес"] },
             { made: "Россия, г. Тула", manufacturer: "IDS Borjomi Russia", name: ["Borjomi"] },
             { made: "Россия, Московская область", manufacturer: "Бобимэкс", name: ["Снежская"] },
-            { made: "Россия, г. Екатеренбург", manufacturer: "Меркурий", name: ["Пилигрим", "Архызская", "Меркурий", "Кубай"] },
-            { made: "Россия, г. Самара", manufacturer: "PepsiСo", name: ["Aqua Minerale", "Родники России", "Ессентуки"] },
-            { made: "Россия, г. Санкт-Петербург", manufacturer: "Аквалайф", name: ["Аквалайф", "Черноголовка", "Славяновская"] },
+            {
+                made: "Россия, г. Екатеренбург",
+                manufacturer: "Меркурий",
+                name: ["Пилигрим", "Архызская", "Меркурий", "Кубай"]
+            },
+            {
+                made: "Россия, г. Самара",
+                manufacturer: "PepsiСo",
+                name: ["Aqua Minerale", "Родники России", "Ессентуки"]
+            },
+            {
+                made: "Россия, г. Санкт-Петербург",
+                manufacturer: "Аквалайф",
+                name: ["Аквалайф", "Черноголовка", "Славяновская"]
+            },
             { made: "Франция, г. Эвьян-ле-Бен", manufacturer: "Danone", name: ["Evian"] },
             { made: "Россия, г. Черкесск", manufacturer: "Архыз Оригинал", name: ["Архыз"] }
         ];
