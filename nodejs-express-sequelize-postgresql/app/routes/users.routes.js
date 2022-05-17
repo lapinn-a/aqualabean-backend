@@ -1,4 +1,4 @@
-const { auth, verifyUserData } = require("../middleware");
+const { auth, verifyUserData} = require("../middleware");
 const controller = require("../controllers/users.controller");
 module.exports = function(app) {
     app.use(function(req, res, next) {
@@ -8,6 +8,12 @@ module.exports = function(app) {
         );
         next();
     });
+    app.get("/api/test/all", controller.allAccess);
+    app.get(
+        "/api/test/user",
+        [auth.verifyToken],
+        controller.userBoard
+    );
     app.get(
         "/api/account",
         [auth.verifyToken],

@@ -43,7 +43,6 @@ exports.create = (req, res) => {
             res.send(data);
         })
         .catch(err => {
-            console.log(err.message);
             res.status(500).send({
                 message:
                     "Произошла ошибка при добавлении товара"
@@ -71,15 +70,15 @@ function getImages(id) {
 }
 
 // Получить параметр для объединения
-function getInclude(token) {
+function getInclude(token){
     const include = {
         model: Users,
         as: 'favorites1',
         required: false,
-        through: { attributes: [] },
-        where: { id: 0 }
+        through: {attributes: []},
+        where: {id: 0}
     };
-    if (token) {
+    if(token){
         jwt.verify(token, config.secret, (err, decoded) => {
             if (err) {
                 return;
@@ -95,7 +94,7 @@ exports.findOne = (req, res) => {
     const id = req.query.id;
     const token = req.headers["x-access-token"];
     const include = getInclude(token);
-    Promise.all([Product.findByPk(id, { include: include }), getImages(id)])
+    Promise.all([Product.findByPk(id, {include: include}), getImages(id)])
         .then(data => {
             if (data[0]) {
                 data[0].setDataValue("images", data[1]);
@@ -109,7 +108,6 @@ exports.findOne = (req, res) => {
             }
         })
         .catch(err => {
-            console.log(err.message);
             res.status(500).send({
                 message: "Ошибка получения товара с номером " + id
             });
@@ -155,10 +153,10 @@ exports.getCatalog = (req, res) => {
         order = [[req.query.sort, req.query.order]];
     }
 
-    var parameters = { where, limit, offset, order, include };
+    var parameters = {where, limit, offset, order, include};
 
-    for (const filter in req.query) {
-        if (req.query.hasOwnProperty(filter) && typeof Product.getAttributes()[filter] !== 'undefined') {
+    for(const filter in req.query){
+        if(req.query.hasOwnProperty(filter) && typeof Product.getAttributes()[filter] !== 'undefined'){
             parameters.where[filter] = {
                 [Op.iLike]: `%${req.query[filter]}%`
             }
@@ -171,7 +169,7 @@ exports.getCatalog = (req, res) => {
             data.rows.forEach((row) => {
                 promises.push(getImages(row.id)
                     .then((images) => {
-                        if (images.length > 1) {
+                        if(images.length > 1){
                             images.length = 1;
                         }
                         row.setDataValue("images", images);
@@ -186,7 +184,6 @@ exports.getCatalog = (req, res) => {
                 });
         })
         .catch(err => {
-            console.log(err.message);
             res.status(500).send({
                 message: "Не удалось получить каталог"
             });

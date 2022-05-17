@@ -1,4 +1,4 @@
-const { auth } = require("../middleware");
+const {auth} = require("../middleware");
 const carts = require("../controllers/carts.controller");
 module.exports = function(app) {
     //Добавить в корзину

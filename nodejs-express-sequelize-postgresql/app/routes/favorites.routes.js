@@ -1,4 +1,4 @@
-const { auth } = require("../middleware");
+const {auth} = require("../middleware");
 const favorites = require("../controllers/favorites.controller");
 module.exports = function(app) {
     //Добавить в избранное

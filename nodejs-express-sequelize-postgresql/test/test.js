@@ -1,8 +1,8 @@
 const request = require("supertest");
 const app = require("../server");
 
-beforeAll(async () => {
-    await new Promise((r) => setTimeout(r, 5000));
+beforeEach(async () => {
+  await new Promise((r) => setTimeout(r, 1000));
 });
 
 describe("Test the root api path", () => {
@@ -25,7 +25,7 @@ describe("Test the catalog", () => {
                 expect(response.statusCode).toBe(200);
                 expect(response.body).toHaveProperty('count');
                 expect(response.body).toHaveProperty('rows');
-                expect(response.body.rows[0]).toHaveProperty('name')
+				expect(response.body.rows[0]).toHaveProperty('name')
                 done();
             });
     });
@@ -48,8 +48,7 @@ describe("Test create profile", () => {
         request(app)
             .get("/api/account")
             .then(response => {
-                expect(response.statusCode).toBe(/*403*/200);
-                expect(response.body).toHaveProperty('message');
+                expect(response.statusCode).toBe(403);
                 done();
             });
     });
@@ -58,8 +57,7 @@ describe("Test create profile", () => {
             .get("/api/account")
             .set('x-access-token', '12345')
             .then(response => {
-                expect(response.statusCode).toBe(/*401*/200);
-                expect(response.body).toHaveProperty('message');
+                expect(response.statusCode).toBe(401);
                 done();
             });
     });
@@ -212,9 +210,9 @@ describe("Test auth and profile edit", () => {
             .put("/api/account")
             .set('x-access-token', token)
             .send({
-                "phone": "+7(999)777-77-33",
-                "email": "user@aqualabean.ru",
-                "name": "Костя"
+                    "phone": "+7(999)777-77-33",
+                    "email": "user@aqualabean.ru",
+                    "name": "Костя"
             })
             .then(response => {
                 expect(response.statusCode).toBe(200);
