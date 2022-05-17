@@ -35,47 +35,47 @@ checkRequiredFieldsExists = (req, res, next) => {
 }
 
 checkDuplicatePhone = (req, res, next) => {
-    if(req.body.phone){
-    users.findOne({
-        where: {
-            phone: req.body.phone
-        }
-    }).then(user => {
-        if (user) {
-            res.status(400).send({
-                message: "Ошибка! Телефон уже используется"
-            });
-            return;
-        }
-        next();
-    });
+    if (req.body.phone) {
+        users.findOne({
+            where: {
+                phone: req.body.phone
+            }
+        }).then(user => {
+            if (user) {
+                res.status(400).send({
+                    message: "Ошибка! Телефон уже используется"
+                });
+                return;
+            }
+            next();
+        });
     } else {
-    next();
+        next();
     }
 };
 
 checkDuplicateEmail = (req, res, next) => {
-if(req.body.email){
-    users.findOne({
-        where: {
-            email: req.body.email
-        }
-    }).then(user => {
-        if (user) {
-            res.status(400).send({
-                message: "Ошибка! Почтовый ящик уже используется"
-            });
-            return;
-        }
-        next();
-    });
+    if (req.body.email) {
+        users.findOne({
+            where: {
+                email: req.body.email
+            }
+        }).then(user => {
+            if (user) {
+                res.status(400).send({
+                    message: "Ошибка! Почтовый ящик уже используется"
+                });
+                return;
+            }
+            next();
+        });
     } else {
-    next();
+        next();
     }
 };
 
 checkName = (req, res, next) => {
-    if(req.body.name && req.body.name === '') {
+    if (req.body.name && req.body.name === '') {
         res.status(400).send({
             message: "Ошибка! Имя не может быть пустым"
         });
@@ -85,7 +85,7 @@ checkName = (req, res, next) => {
 };
 
 checkRolesExisted = (req, res, next) => {
-    if(req.body.roles) {
+    if (req.body.roles) {
         for (let i = 0; i < req.body.roles.length; i++) {
             if (!ROLES.includes(req.body.roles[i])) {
                 res.status(400).send({

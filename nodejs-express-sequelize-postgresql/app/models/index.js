@@ -2,16 +2,16 @@ const dbConfig = require("../config/db.config.js");
 
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-  host: dbConfig.HOST,
-  port: dbConfig.PORT,
-  dialect: dbConfig.dialect,
-  logging: false,
-  pool: {
-    max: dbConfig.pool.max,
-    min: dbConfig.pool.min,
-    acquire: dbConfig.pool.acquire,
-    idle: dbConfig.pool.idle
-  }
+    host: dbConfig.HOST,
+    port: dbConfig.PORT,
+    dialect: dbConfig.dialect,
+    logging: false,
+    pool: {
+        max: dbConfig.pool.max,
+        min: dbConfig.pool.min,
+        acquire: dbConfig.pool.acquire,
+        idle: dbConfig.pool.idle
+    }
 });
 
 const db = {};
@@ -26,39 +26,39 @@ db.favorites = require("./favorites.model")(sequelize, Sequelize);
 db.carts = require("./carts.model")(sequelize, Sequelize);
 
 db.roles.belongsToMany(db.users, {
-  through: "user_roles", //название соед таблиц
-  foreignKey: "roleId",   //
-  otherKey: "userId"      //
+    through: "user_roles", //название соед таблиц
+    foreignKey: "roleId",   //
+    otherKey: "userId"      //
 });
 db.users.belongsToMany(db.roles, {
-  through: "user_roles",
-  foreignKey: "userId",
-  otherKey: "roleId"
+    through: "user_roles",
+    foreignKey: "userId",
+    otherKey: "roleId"
 });
 //Для избранного
 db.users.belongsToMany(db.product, {
-  as: "favorites1",
-  through: "favorites",
-  foreignKey: "userId",
-  otherKey: "productId"
+    as: "favorites1",
+    through: "favorites",
+    foreignKey: "userId",
+    otherKey: "productId"
 });
 db.product.belongsToMany(db.users, {
-  as: "favorites1",
-  through: "favorites",
-  foreignKey: "productId",
-  otherKey: "userId"
+    as: "favorites1",
+    through: "favorites",
+    foreignKey: "productId",
+    otherKey: "userId"
 });
 //Для корзины
 db.users.belongsToMany(db.product, {
-  as: "carts1",
-  through: "carts",
-  foreignKey: "userId",
-  otherKey: "productId"
+    as: "carts1",
+    through: "carts",
+    foreignKey: "userId",
+    otherKey: "productId"
 });
 db.product.belongsToMany(db.users, {
-  through: "carts",
-  foreignKey: "productId",
-  otherKey: "userId"
+    through: "carts",
+    foreignKey: "productId",
+    otherKey: "userId"
 });
 
 db.ROLES = ["user"];

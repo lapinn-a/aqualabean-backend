@@ -7,7 +7,7 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 exports.register = (req, res) => {
     // Save User to Database
-    if(!req.body.email){
+    if (!req.body.email) {
         req.body.email = "";
     }
     User.create({
@@ -40,6 +40,7 @@ exports.register = (req, res) => {
             }
         })
         .catch(err => {
+            console.log(err.message);
             res.status(500).send({ message: err.message });
         });
 };
@@ -48,7 +49,7 @@ exports.login = (req, res) => {
     return login(req, res);
 }
 
-function login(req, res){
+function login(req, res) {
     User.findOne({
         where: {
             phone: req.body.phone
@@ -88,6 +89,7 @@ function login(req, res){
             });
         })
         .catch(err => {
+            console.log(err.message);
             res.status(500).send({ message: err.message });
         });
-};
+}

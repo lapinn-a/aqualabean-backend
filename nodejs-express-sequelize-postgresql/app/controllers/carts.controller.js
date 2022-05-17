@@ -14,7 +14,7 @@ exports.addCart = (req, res) => {
 
     Users.findByPk(id)
         .then(user => {
-            if(user) {
+            if (user) {
                 //Проверка на Повторное добавление товара
                 Carts.findOne({ where: { productId: productId } }).then(cartProd => {
                     if (cartProd) {
@@ -23,14 +23,14 @@ exports.addCart = (req, res) => {
                             if (prod) {
                                 if ((parseInt(amount) + parseInt(cartProd.amount)) <= prod.amount) {
                                     //Добавляем к текущему количеству
-                                   // Carts.update(req.body, {
-                                    Carts.update({ amount : (parseInt(amount) + parseInt(cartProd.amount)) }, {
+                                    // Carts.update(req.body, {
+                                    Carts.update({ amount: (parseInt(amount) + parseInt(cartProd.amount)) }, {
                                         where: {
                                             userId: user.id,
                                             productId: cartProd.productId
                                         }
                                     }).then(cartProd => {
-                                        if (cartProd == 1) {
+                                        if (parseInt(cartProd) === 1) {
                                             res.send({
                                                 message: "Товар добавлен в корзину!"
                                             });
@@ -40,6 +40,7 @@ exports.addCart = (req, res) => {
                                             });
                                         }
                                     }).catch(err => {
+                                        console.log(err.message);
                                         res.status(500).send({
                                             message: "Не удалось добавить товар в корзину"
                                         });
@@ -56,6 +57,7 @@ exports.addCart = (req, res) => {
                             }
 
                         }).catch(err => {
+                            console.log(err.message);
                             res.status(500).send({
                                 message: "Не удалось добавить товар в корзину"
                             });
@@ -73,10 +75,11 @@ exports.addCart = (req, res) => {
                                     };
 
                                     Carts.create(product)
-                                        .then(data => {
+                                        .then(() => {
                                             getCart(req, res);
                                         })
                                         .catch(err => {
+                                            console.log(err.message);
                                             getCart(req, res);
                                         });
                                 } else {
@@ -90,12 +93,14 @@ exports.addCart = (req, res) => {
                                 });
                             }
                         }).catch(err => {
+                            console.log(err.message);
                             res.status(500).send({
                                 message: "Не удалось добавить товар в корзину"
                             });
                         });
                     }
                 }).catch(err => {
+                    console.log(err.message);
                     res.status(500).send({
                         message: "Не удалось добавить товар в корзину"
                     });
@@ -107,6 +112,7 @@ exports.addCart = (req, res) => {
             }
         })
         .catch(err => {
+            console.log(err.message);
             res.status(500).send({
                 message: "Не удалось добавить товар в корзину"
             });
@@ -124,7 +130,7 @@ function getCart(req, res) {
 
     Users.findByPk(id)
         .then(user => {
-            if(user) {
+            if (user) {
 
                 Users.findOne({
                     where: {
@@ -141,7 +147,7 @@ function getCart(req, res) {
                         cart.carts1.forEach((row) => {
                             promises.push(productsController.getImages(row.id)
                                 .then((images) => {
-                                    if(images.length > 1){
+                                    if (images.length > 1) {
                                         images.length = 1;
                                     }
                                     row.setDataValue("images", images);
@@ -160,6 +166,7 @@ function getCart(req, res) {
                         });
                     }
                 }).catch(err => {
+                    console.log(err.message);
                     res.status(500).send({
                         message: "Не удалось получить корзину"
                     });
@@ -174,11 +181,12 @@ function getCart(req, res) {
             }
         })
         .catch(err => {
+            console.log(err.message);
             res.status(500).send({
                 message: "Не удалось получить корзину"
             });
         });
-};
+}
 
 
 //Убрать из корзины товар
@@ -188,14 +196,14 @@ exports.delCart = (req, res) => {
 
     Users.findByPk(id)
         .then(user => {
-            if(user) {
+            if (user) {
                 Carts.destroy({
                     where: {
                         userId: id,
                         productId: pId,
                     }
                 })
-                    .then(num => {
+                    .then(() => {
                         /*if (num == 1) {
                             res.send({
                                 message: "Товар успешно удалён из корзины!"
@@ -208,6 +216,7 @@ exports.delCart = (req, res) => {
                         getCart(req, res);
                     })
                     .catch(err => {
+                        console.log(err.message);
                         res.status(500).send({
                             message: "Не удалось удалить товар из корзины"
                         });
@@ -219,6 +228,7 @@ exports.delCart = (req, res) => {
             }
         })
         .catch(err => {
+            console.log(err.message);
             res.status(500).send({
                 message: "Не удалось удалить товар из корзины"
             });
@@ -234,12 +244,11 @@ exports.updateCart = (req, res) => {
 
     Users.findByPk(id)
         .then(user => {
-            if(user) {
+            if (user) {
                 Carts.findOne({ where: { productId: productId } }).then(cartProd => {
                     if (cartProd) {
-                        let id = productId;
                         //Проверка на наличие количества товара
-                        Products.findByPk(id).then(prod => {
+                        Products.findByPk(productId).then(prod => {
                             if (prod) {
                                 if (amount <= prod.amount) {
                                     Carts.update(req.body, {
@@ -247,7 +256,7 @@ exports.updateCart = (req, res) => {
                                             userId: user.id,
                                             productId: cartProd.productId
                                         }
-                                    }).then(cartProd => {
+                                    }).then(() => {
                                         /*if (cartProd == 1) {
                                             res.send({
                                                 message: "Количество успешно обновлено!"
@@ -259,6 +268,7 @@ exports.updateCart = (req, res) => {
                                         }*/
                                         getCart(req, res);
                                     }).catch(err => {
+                                        console.log(err.message);
                                         res.status(500).send({
                                             message: "Не удалось обновить количество"
                                         });
@@ -277,6 +287,7 @@ exports.updateCart = (req, res) => {
                             }
 
                         }).catch(err => {
+                            console.log(err.message);
                             res.status(500).send({
                                 message: "Не удалось обновить количество"
                             });
@@ -288,6 +299,7 @@ exports.updateCart = (req, res) => {
                         });
                     }
                 }).catch(err => {
+                    console.log(err.message);
                     res.status(500).send({
                         message: "Не удалось обновить количество"
                     });
@@ -300,6 +312,7 @@ exports.updateCart = (req, res) => {
             }
         })
         .catch(err => {
+            console.log(err.message);
             res.status(500).send({
                 message: "Не удалось обновить количество"
             });
