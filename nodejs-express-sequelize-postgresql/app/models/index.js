@@ -5,7 +5,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
   port: dbConfig.PORT,
   dialect: dbConfig.dialect,
-
+  logging: false,
   pool: {
     max: dbConfig.pool.max,
     min: dbConfig.pool.min,
@@ -37,17 +37,20 @@ db.users.belongsToMany(db.roles, {
 });
 //Для избранного
 db.users.belongsToMany(db.product, {
+  as: "favorites1",
   through: "favorites",
   foreignKey: "userId",
   otherKey: "productId"
 });
 db.product.belongsToMany(db.users, {
+  as: "favorites1",
   through: "favorites",
   foreignKey: "productId",
   otherKey: "userId"
 });
 //Для корзины
 db.users.belongsToMany(db.product, {
+  as: "carts1",
   through: "carts",
   foreignKey: "userId",
   otherKey: "productId"

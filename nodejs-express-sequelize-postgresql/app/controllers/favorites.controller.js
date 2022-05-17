@@ -1,7 +1,8 @@
 const db = require("../models");
 const Favorites = db.favorites;
 const Users = db.users;
-
+const Products = db.product;
+const productsController = require("../controllers/product.controller");
 
 //Добавить в избранное
 exports.addFav = (req, res) => {
@@ -18,12 +19,11 @@ exports.addFav = (req, res) => {
 
                 Favorites.create(favProduct)
                     .then(data => {
-                        res.send(data);
+                        //res.send(data);
+                        getFav(req, res);
                     })
                     .catch(err => {
-                        res.status(500).send({
-                            message: "Не удалось добавить товар в избранное"
-                        });
+                        getFav(req, res);
                     });
 
             } else {
@@ -42,19 +42,42 @@ exports.addFav = (req, res) => {
 
 //Посмотреть избранное
 exports.getFav = (req, res) => {
+    return getFav(req, res);
+}
+
+function getFav(req, res) {
     const id = req.userId;
 
      Users.findByPk(id)
         .then(user => {
             if(user) {
 
-                Favorites.findAndCountAll({
+                Users.findOne({
                     where: {
-                        userId: user.id
+                        id: user.id
+                    },
+                    include: {
+                        model: Products,
+                        as: 'favorites1',
+                        through: { attributes: [] }
                     }
                 }).then(fav => {
                     if (fav) {
-                        res.status(200).send(fav.rows);
+                        const promises = [];
+                        fav.favorites1.forEach((row) => {
+                            promises.push(productsController.getImages(row.id)
+                                .then((images) => {
+                                    if(images.length > 1){
+                                        images.length = 1;
+                                    }
+                                    row.setDataValue("images", images);
+                                })
+                            );
+                        });
+                        Promise.all(promises)
+                            .then(() => {
+                                res.send(fav.favorites1);
+                            });
                     } else {
                         res.status(404).send({
                             message: "Избранное не найдено"
@@ -65,9 +88,6 @@ exports.getFav = (req, res) => {
                         message: "Не удалось получить избранное"
                     });
                 });
-
-               // const prodIds = fav.rows;
-
             } else {
                 res.status(404).send({
                     message: "Пользователь не найден"
@@ -97,15 +117,7 @@ exports.delFav = (req, res) => {
                     }
                 })
                     .then(num => {
-                        if (num == 1) {
-                            res.send({
-                                message: "Товар удалён из избрангого!"
-                            });
-                        } else {
-                            res.send({
-                                message: "Невозможно удалить товар из избранного. Возможно, в избранном его нет"
-                            });
-                        }
+                        getFav(req, res);
                     })
                     .catch(err => {
                         res.status(500).send({

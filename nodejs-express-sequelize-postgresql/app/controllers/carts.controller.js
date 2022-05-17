@@ -1,4 +1,5 @@
 const db = require("../models");
+const productsController = require("./product.controller");
 const Carts = db.carts;
 const Users = db.users;
 const Products = db.product;
@@ -44,7 +45,7 @@ exports.addCart = (req, res) => {
                                         });
                                     });
                                 } else {
-                                    res.status(404).send({
+                                    res.status(400).send({
                                         message: "Количество недоступно"
                                     });
                                 }
@@ -73,15 +74,13 @@ exports.addCart = (req, res) => {
 
                                     Carts.create(product)
                                         .then(data => {
-                                            res.send(data);
+                                            getCart(req, res);
                                         })
                                         .catch(err => {
-                                            res.status(500).send({
-                                                message: "Не удалось добавить товар в корзину"
-                                            });
+                                            getCart(req, res);
                                         });
                                 } else {
-                                    res.status(404).send({
+                                    res.status(400).send({
                                         message: "Количество недоступно"
                                     });
                                 }
@@ -117,19 +116,44 @@ exports.addCart = (req, res) => {
 
 //Посмотреть корзину
 exports.getCart = (req, res) => {
+    return getCart(req, res);
+}
+
+function getCart(req, res) {
     const id = req.userId;
 
     Users.findByPk(id)
         .then(user => {
             if(user) {
 
-                Carts.findAndCountAll({
+                Users.findOne({
                     where: {
-                        userId: user.id
+                        id: user.id
+                    },
+                    include: {
+                        model: Products,
+                        as: 'carts1',
+                        through: { attributes: ['amount'] }
                     }
                 }).then(cart => {
                     if (cart) {
-                        res.status(200).send(cart.rows);
+                        const promises = [];
+                        cart.carts1.forEach((row) => {
+                            promises.push(productsController.getImages(row.id)
+                                .then((images) => {
+                                    if(images.length > 1){
+                                        images.length = 1;
+                                    }
+                                    row.setDataValue("images", images);
+                                })
+                            );
+                            row.setDataValue("amount", row.carts.amount);
+                            row.setDataValue("carts", undefined);
+                        });
+                        Promise.all(promises)
+                            .then(() => {
+                                res.send(cart.carts1);
+                            });
                     } else {
                         res.status(404).send({
                             message: "Не удалось получить корзину"
@@ -172,7 +196,7 @@ exports.delCart = (req, res) => {
                     }
                 })
                     .then(num => {
-                        if (num == 1) {
+                        /*if (num == 1) {
                             res.send({
                                 message: "Товар успешно удалён из корзины!"
                             });
@@ -180,7 +204,8 @@ exports.delCart = (req, res) => {
                             res.send({
                                 message: "Невозможно удалить товар из корзины, в корзине его нет"
                             });
-                        }
+                        }*/
+                        getCart(req, res);
                     })
                     .catch(err => {
                         res.status(500).send({
@@ -223,7 +248,7 @@ exports.updateCart = (req, res) => {
                                             productId: cartProd.productId
                                         }
                                     }).then(cartProd => {
-                                        if (cartProd == 1) {
+                                        /*if (cartProd == 1) {
                                             res.send({
                                                 message: "Количество успешно обновлено!"
                                             });
@@ -231,7 +256,8 @@ exports.updateCart = (req, res) => {
                                             res.send({
                                                 message: "Не удалось обновить количество"
                                             });
-                                        }
+                                        }*/
+                                        getCart(req, res);
                                     }).catch(err => {
                                         res.status(500).send({
                                             message: "Не удалось обновить количество"
@@ -239,7 +265,7 @@ exports.updateCart = (req, res) => {
                                     });
 
                                 } else {
-                                    res.status(404).send({
+                                    res.status(400).send({
                                         message: "Количество недоступно"
                                     });
                                 }
