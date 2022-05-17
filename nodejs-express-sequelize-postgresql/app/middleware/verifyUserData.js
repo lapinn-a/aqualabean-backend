@@ -18,12 +18,12 @@ checkRequiredFieldsExists = (req, res, next) => {
         return;
     }
 
-    if (!req.body.email) {
+    /*if (!req.body.email) {
         res.status(400).send({
             message: "Failed! Email not provided"
         });
         return;
-    }
+    }*/
 
     if (!req.body.password) {
         res.status(400).send({
@@ -35,6 +35,7 @@ checkRequiredFieldsExists = (req, res, next) => {
 }
 
 checkDuplicatePhone = (req, res, next) => {
+    if(req.body.phone){
     users.findOne({
         where: {
             phone: req.body.phone
@@ -48,9 +49,13 @@ checkDuplicatePhone = (req, res, next) => {
         }
         next();
     });
+    } else {
+    next();
+    }
 };
 
 checkDuplicateEmail = (req, res, next) => {
+if(req.body.email){
     users.findOne({
         where: {
             email: req.body.email
@@ -64,6 +69,9 @@ checkDuplicateEmail = (req, res, next) => {
         }
         next();
     });
+    } else {
+    next();
+    }
 };
 
 checkName = (req, res, next) => {

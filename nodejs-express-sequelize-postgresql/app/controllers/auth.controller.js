@@ -7,6 +7,9 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 exports.register = (req, res) => {
     // Save User to Database
+    if(!req.body.email){
+        req.body.email = "";
+    }
     User.create({
         name: req.body.name,
         surname: req.body.surname,
@@ -26,13 +29,15 @@ exports.register = (req, res) => {
                     }
                 }).then(roles => {
                     user.setRoles(roles).then(() => {
-                        res.send({ message: "User was registered successfully!" });
+                        //res.send({ message: "User was registered successfully!" });
+                        login(req, res);
                     });
                 });
             } else {
                 // user role = 1
                 user.setRoles([0]).then(() => {
-                    res.send({ message: "User was registered successfully!" });
+                login(req, res);
+                    //res.send({ message: "User was registered successfully!" });
                 });
             }
         })
@@ -42,6 +47,10 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
+return login(req, res);
+}
+
+function login(req, res){
     User.findOne({
         where: {
             phone: req.body.phone
@@ -73,6 +82,7 @@ exports.login = (req, res) => {
                     id: user.id,
                     "greeting": "Добрый вечер, ",
                     name: user.name,
+                    phone: user.phone,
                     email: user.email,
                     roles: authorities,
                     accessToken: token
