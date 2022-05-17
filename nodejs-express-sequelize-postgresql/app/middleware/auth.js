@@ -6,13 +6,13 @@ verifyToken = (req, res, next) => {
     let token = req.headers["x-access-token"];
     if (!token) {
         return res.status(/*403*/200).send({
-            message: "No token provided!"
+            message: "Токен не предоставлен"
         });
     }
     jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
             return res.status(/*401*/200).send({
-                message: "Unauthorized!"
+                message: "Необходима авторизация"
             });
         }
         req.userId = decoded.id;

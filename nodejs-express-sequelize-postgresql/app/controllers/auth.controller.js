@@ -29,15 +29,13 @@ exports.register = (req, res) => {
                     }
                 }).then(roles => {
                     user.setRoles(roles).then(() => {
-                        //res.send({ message: "User was registered successfully!" });
                         login(req, res);
                     });
                 });
             } else {
                 // user role = 1
                 user.setRoles([0]).then(() => {
-                login(req, res);
-                    //res.send({ message: "User was registered successfully!" });
+                    login(req, res);
                 });
             }
         })
@@ -47,7 +45,7 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
-return login(req, res);
+    return login(req, res);
 }
 
 function login(req, res){
@@ -58,7 +56,7 @@ function login(req, res){
     })
         .then(user => {
             if (!user) {
-                return res.status(404).send({ message: "User Not found." });
+                return res.status(404).send({ message: "Пользователь не найден." });
             }
             var passwordIsValid = bcrypt.compareSync(
                 req.body.password,
@@ -67,7 +65,7 @@ function login(req, res){
             if (!passwordIsValid) {
                 return res.status(401).send({
                     accessToken: null,
-                    message: "Invalid Password!"
+                    message: "Неверный пароль!"
                 });
             }
             var token = jwt.sign({ id: user.id }, config.secret, {
