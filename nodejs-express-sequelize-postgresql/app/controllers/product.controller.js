@@ -42,7 +42,7 @@ exports.create = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Произошла ошибка при создании продукта."
+                    "Произошла ошибка при добавлении товара"
             });
         });
 };
@@ -82,7 +82,7 @@ exports.findOne = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Ошибка получения товара с идентификатором =" + id
+                message: "Ошибка получения товара с номером " + id
             });
         });
 };
@@ -154,7 +154,7 @@ exports.getCatalog = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Ошибка при загрузке каталога"
+                message: "Не удалось получить каталог"
             });
         });
 };

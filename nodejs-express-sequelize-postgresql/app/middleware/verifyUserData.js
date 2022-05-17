@@ -103,7 +103,7 @@ checkPhone = (req, res, next) => {
 checkEmail = (req, res, next) => {
     if (req.body.email && !validator.validate(req.body.email)) {
         res.status(400).send({
-            message: "Ошибка! Неправильный формат электронной почты"
+            message: "Ошибка! Неверный формат электронной почты"
         });
         return;
     }

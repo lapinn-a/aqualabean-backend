@@ -17,10 +17,8 @@ exports.addCart = (req, res) => {
                 //Проверка на Повторное добавление товара
                 Carts.findOne({ where: { productId: productId } }).then(cartProd => {
                     if (cartProd) {
-
-                        let id = productId;
                         //Проверка на наличие количества товара
-                        Products.findByPk(id).then(prod => {
+                        Products.findByPk(productId).then(prod => {
                             if (prod) {
                                 if ((parseInt(amount) + parseInt(cartProd.amount)) <= prod.amount) {
                                     //Добавляем к текущему количеству
@@ -33,26 +31,23 @@ exports.addCart = (req, res) => {
                                     }).then(cartProd => {
                                         if (cartProd == 1) {
                                             res.send({
-                                                message: "Корзина успешно обновлена."
+                                                message: "Товар добавлен в корзину!"
                                             });
                                         } else {
                                             res.send({
-                                                message: `Не удается обновить корзину`
+                                                message: "Не удалось добавить товар в корзину"
                                             });
                                         }
                                     }).catch(err => {
                                         res.status(500).send({
-                                            message: "Ошибка при обновлении товара в корзине"
+                                            message: "Не удалось добавить товар в корзину"
                                         });
                                     });
-
-
                                 } else {
                                     res.status(404).send({
                                         message: "Количество недоступно"
                                     });
                                 }
-
                             } else {
                                 res.status(404).send({
                                     message: "Товар не найден"
@@ -61,14 +56,12 @@ exports.addCart = (req, res) => {
 
                         }).catch(err => {
                             res.status(500).send({
-                                message: "Ошибка при поиске товара"
+                                message: "Не удалось добавить товар в корзину"
                             });
                         });
-
                     } else {
-                        let id = productId;
                         //Проверка на наличие количества товара
-                        Products.findByPk(id).then(prod => {
+                        Products.findByPk(productId).then(prod => {
                             if (prod) {
                                 if (amount <= prod.amount) {
 
@@ -84,39 +77,31 @@ exports.addCart = (req, res) => {
                                         })
                                         .catch(err => {
                                             res.status(500).send({
-                                                message:
-                                                    err.message || "ошибка при добавлении корзины"
+                                                message: "Не удалось добавить товар в корзину"
                                             });
                                         });
-
-
                                 } else {
                                     res.status(404).send({
-                                        message: "Сумма недоступна"
+                                        message: "Количество недоступно"
                                     });
                                 }
-
                             } else {
                                 res.status(404).send({
                                     message: "Товар не найден"
                                 });
                             }
-
                         }).catch(err => {
                             res.status(500).send({
-                                message: "Ошибка при поиске товара"
+                                message: "Не удалось добавить товар в корзину"
                             });
                         });
                     }
                 }).catch(err => {
                     res.status(500).send({
-                        message: "Ошибка при добавлении товара в корзину"
+                        message: "Не удалось добавить товар в корзину"
                     });
                 });
-
-            }
-
-             else {
+            } else {
                 res.status(404).send({
                     message: "Пользователь не найден"
                 });
@@ -124,7 +109,7 @@ exports.addCart = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Ошибка при добавлении в корзину"
+                message: "Не удалось добавить товар в корзину"
             });
         });
 
@@ -147,7 +132,7 @@ exports.getCart = (req, res) => {
                         res.status(200).send(cart.rows);
                     } else {
                         res.status(404).send({
-                            message: "Корзина не найдена"
+                            message: "Не удалось получить корзину"
                         });
                     }
                 }).catch(err => {
@@ -166,7 +151,7 @@ exports.getCart = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Ошибка при добавлении в избранное"
+                message: "Не удалось получить корзину"
             });
         });
 };
@@ -189,20 +174,19 @@ exports.delCart = (req, res) => {
                     .then(num => {
                         if (num == 1) {
                             res.send({
-                                message: "Товар в корзине успешно удален!"
+                                message: "Товар успешно удалён из корзины!"
                             });
                         } else {
                             res.send({
-                                message: `Невозможно удалить товар в корзине. Возможно товар не найден!`
+                                message: "Невозможно удалить товар из корзины, в корзине его нет"
                             });
                         }
                     })
                     .catch(err => {
                         res.status(500).send({
-                            message: "Не удалось удалить товар в корзине"
+                            message: "Не удалось удалить товар из корзины"
                         });
                     });
-
             } else {
                 res.status(404).send({
                     message: "Пользователь не найден"
@@ -211,7 +195,7 @@ exports.delCart = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Ошибка при удалении товара в корзине"
+                message: "Не удалось удалить товар из корзины"
             });
         });
 };
@@ -241,16 +225,16 @@ exports.updateCart = (req, res) => {
                                     }).then(cartProd => {
                                         if (cartProd == 1) {
                                             res.send({
-                                                message: "Корзина успешно обновлена."
+                                                message: "Количество успешно обновлено!"
                                             });
                                         } else {
                                             res.send({
-                                                message: `Не удается обновить корзину`
+                                                message: "Не удалось обновить количество"
                                             });
                                         }
                                     }).catch(err => {
                                         res.status(500).send({
-                                            message: "Ошибка при обновлении товара в корзине"
+                                            message: "Не удалось обновить количество"
                                         });
                                     });
 
@@ -268,18 +252,18 @@ exports.updateCart = (req, res) => {
 
                         }).catch(err => {
                             res.status(500).send({
-                                message: "Ошибка при поиске товара"
+                                message: "Не удалось обновить количество"
                             });
                         });
 
                     } else {
                         res.send({
-                            message: `Не удается обновить корзину, товар не найден`
+                            message: "Не удалось обновить количество, товара нет в корзине"
                         });
                     }
                 }).catch(err => {
                     res.status(500).send({
-                        message: "Ошибка при обновлении товара в корзине"
+                        message: "Не удалось обновить количество"
                     });
                 });
 
@@ -291,7 +275,7 @@ exports.updateCart = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Ошибка при обновлении товара в корзину"
+                message: "Не удалось обновить количество"
             });
         });
 };

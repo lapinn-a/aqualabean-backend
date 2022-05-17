@@ -22,8 +22,7 @@ exports.addFav = (req, res) => {
                     })
                     .catch(err => {
                         res.status(500).send({
-                            message:
-                                err.message || "Ошибка добавления в избранное"
+                            message: "Не удалось добавить товар в избранное"
                         });
                     });
 
@@ -35,7 +34,7 @@ exports.addFav = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Ошибка при добавлении в избранное"
+                message: "Не удалось добавить товар в избранное"
             });
         });
 
@@ -63,7 +62,7 @@ exports.getFav = (req, res) => {
                     }
                 }).catch(err => {
                     res.status(500).send({
-                        message: "Ошибка получения избранного"
+                        message: "Не удалось получить избранное"
                     });
                 });
 
@@ -77,7 +76,7 @@ exports.getFav = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Ошибка при добавлении в избранное"
+                message: "Не удалось получить избранное"
             });
         });
 };
@@ -100,17 +99,17 @@ exports.delFav = (req, res) => {
                     .then(num => {
                         if (num == 1) {
                             res.send({
-                                message: "Избранное успешно удалено!"
+                                message: "Товар удалён из избрангого!"
                             });
                         } else {
                             res.send({
-                                message: `Невозможно удалить избранное. Возможно Избранное не найдено!`
+                                message: "Невозможно удалить товар из избранного. Возможно, в избранном его нет"
                             });
                         }
                     })
                     .catch(err => {
                         res.status(500).send({
-                            message: "Не удалось удалить Избранное"
+                            message: "Не удалось удалить товар из избранного"
                         });
                     });
 
@@ -122,7 +121,7 @@ exports.delFav = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Ошибка при удалении из избранное"
+                message: "Не удалось удалить товар из избранного"
             });
         });
 };
