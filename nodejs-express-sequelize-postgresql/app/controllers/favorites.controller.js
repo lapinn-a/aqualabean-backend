@@ -22,20 +22,19 @@ exports.addFav = (req, res) => {
                     })
                     .catch(err => {
                         res.status(500).send({
-                            message:
-                                err.message || "Favorite add error"
+                            message: "Не удалось добавить товар в избранное"
                         });
                     });
 
             } else {
                 res.status(404).send({
-                    message: "User not found"
+                    message: "Пользователь не найден"
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error when adding to favorites"
+                message: "Не удалось добавить товар в избранное"
             });
         });
 
@@ -58,12 +57,12 @@ exports.getFav = (req, res) => {
                         res.status(200).send(fav.rows);
                     } else {
                         res.status(404).send({
-                            message: "Favorites not found"
+                            message: "Избранное не найдено"
                         });
                     }
                 }).catch(err => {
                     res.status(500).send({
-                        message: "Error get Favorites"
+                        message: "Не удалось получить избранное"
                     });
                 });
 
@@ -71,13 +70,13 @@ exports.getFav = (req, res) => {
 
             } else {
                 res.status(404).send({
-                    message: "User not found"
+                    message: "Пользователь не найден"
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error when adding to favorites"
+                message: "Не удалось получить избранное"
             });
         });
 };
@@ -100,29 +99,29 @@ exports.delFav = (req, res) => {
                     .then(num => {
                         if (num == 1) {
                             res.send({
-                                message: "Favorite was deleted successfully!"
+                                message: "Товар удалён из избрангого!"
                             });
                         } else {
                             res.send({
-                                message: `Cannot delete Favorite. Maybe Favorite was not found!`
+                                message: "Невозможно удалить товар из избранного. Возможно, в избранном его нет"
                             });
                         }
                     })
                     .catch(err => {
                         res.status(500).send({
-                            message: "Could not delete Favorite"
+                            message: "Не удалось удалить товар из избранного"
                         });
                     });
 
             } else {
                 res.status(404).send({
-                    message: "User not found"
+                    message: "Пользователь не найден"
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error when del to favorites"
+                message: "Не удалось удалить товар из избранного"
             });
         });
 };

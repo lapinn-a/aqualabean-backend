@@ -7,21 +7,21 @@ const Op = db.Sequelize.Op;
 exports.create = (req, res) => {
     if (!req.body.name) {
         res.status(400).send({
-            message: "Name not specified!"
+            message: "Имя не указано!"
         });
         return;
     }
 
     if (req.body.price <= 0) {
         res.status(400).send({
-            message: "Inappropriate price!"
+            message: "Несоответствующая цена!"
         });
         return;
     }
 
     if (req.body.amount < 0) {
         res.status(400).send({
-            message: "Inappropriate amount!"
+            message: "Несоответствующее количество!"
         });
         return;
     }
@@ -42,7 +42,7 @@ exports.create = (req, res) => {
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while creating the Product."
+                    "Произошла ошибка при добавлении товара"
             });
         });
 };
@@ -76,13 +76,13 @@ exports.findOne = (req, res) => {
                 res.send(data[0]);
             } else {
                 res.status(404).send({
-                    message: "Product not found"
+                    message: "Товар не найден"
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Product with id = " + id
+                message: "Ошибка получения товара с номером " + id
             });
         });
 };
@@ -102,7 +102,7 @@ exports.getCatalog = (req, res) => {
         offset = req.query.size * (req.query.page - 1);
     } else {
         res.status(400).send({
-            message: "Error in query parameters"
+            message: "Ошибка в параметрах запроса"
         });
         return;
     }
@@ -110,14 +110,14 @@ exports.getCatalog = (req, res) => {
     if (typeof req.query.sort != 'undefined' && typeof req.query.order != 'undefined') {
         if (req.query.order !== 'asc' && req.query.order !== 'desc') {
             res.status(400).send({
-                message: "Error in query parameters"
+                message: "Ошибка в параметрах запроса"
             });
             return;
         }
 
         if (typeof Product.getAttributes()[req.query.sort] === 'undefined') {
             res.status(400).send({
-                message: "Error in query parameters"
+                message: "Ошибка в параметрах запроса"
             });
             return;
         }
@@ -154,7 +154,7 @@ exports.getCatalog = (req, res) => {
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error while loading catalog"
+                message: "Не удалось получить каталог"
             });
         });
 };

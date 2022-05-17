@@ -87,7 +87,7 @@ function initial() {
 
 // simple route
 app.get("/api", (req, res) => {
-  res.json({ message: "Welcome to aqualabean application." });
+  res.json({ message: "Добро пожаловать в приложение Aqualabean!" });
 });
 
 require("./app/routes/auth.routes")(app);
