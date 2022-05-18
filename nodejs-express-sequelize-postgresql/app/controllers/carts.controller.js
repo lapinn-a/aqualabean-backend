@@ -254,28 +254,35 @@ exports.updateCart = (req, res) => {
                         Products.findByPk(productId).then(prod => {
                             if (prod) {
                                 if (amount <= prod.amount) {
-                                    Carts.update(req.body, {
-                                        where: {
-                                            userId: user.id,
-                                            productId: cartProd.productId
-                                        }
-                                    }).then(() => {
-                                        /*if (cartProd == 1) {
-                                            res.send({
-                                                message: "Количество успешно обновлено!"
-                                            });
-                                        } else {
-                                            res.send({
+                                    if(req.body.amount > 0) {
+                                        Carts.update(req.body, {
+                                            where: {
+                                                userId: user.id,
+                                                productId: cartProd.productId
+                                            }
+                                        }).then(() => {
+                                            getCart(req, res);
+                                        }).catch(err => {
+                                            console.log(err.message);
+                                            res.status(500).send({
                                                 message: "Не удалось обновить количество"
                                             });
-                                        }*/
-                                        getCart(req, res);
-                                    }).catch(err => {
-                                        console.log(err.message);
-                                        res.status(500).send({
-                                            message: "Не удалось обновить количество"
                                         });
-                                    });
+                                    } else {
+                                        Carts.destroy({
+                                            where: {
+                                                userId: user.id,
+                                                productId: cartProd.productId
+                                            }
+                                        }).then(() => {
+                                            getCart(req, res);
+                                        }).catch(err => {
+                                            console.log(err.message);
+                                            res.status(500).send({
+                                                message: "Не удалось обновить количество"
+                                            });
+                                        });
+                                    }
 
                                 } else {
                                     res.status(400).send({
