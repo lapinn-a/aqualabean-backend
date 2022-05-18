@@ -18,13 +18,6 @@ checkRequiredFieldsExists = (req, res, next) => {
         return;
     }
 
-    if (!req.body.email) {
-        res.status(400).send({
-            message: "Ошибка! Электронная почта не указана"
-        });
-        return;
-    }
-
     if (!req.body.password) {
         res.status(400).send({
             message: "Ошибка! Пароль не указан"
@@ -35,35 +28,43 @@ checkRequiredFieldsExists = (req, res, next) => {
 }
 
 checkDuplicatePhone = (req, res, next) => {
-    users.findOne({
-        where: {
-            phone: req.body.phone
-        }
-    }).then(user => {
-        if (user) {
-            res.status(400).send({
-                message: "Ошибка! Телефон уже используется"
-            });
-            return;
-        }
+    if(req.body.phone) {
+        users.findOne({
+            where: {
+                phone: req.body.phone
+            }
+        }).then(user => {
+            if (user) {
+                res.status(400).send({
+                    message: "Ошибка! Телефон уже используется"
+                });
+                return;
+            }
+            next();
+        });
+    } else {
         next();
-    });
-};
+    }
+}
 
 checkDuplicateEmail = (req, res, next) => {
-    users.findOne({
-        where: {
-            email: req.body.email
-        }
-    }).then(user => {
-        if (user) {
-            res.status(400).send({
-                message: "Ошибка! Почтовый ящик уже используется"
-            });
-            return;
-        }
+    if(req.body.email && req.body.email !== '') {
+        users.findOne({
+            where: {
+                email: req.body.email
+            }
+        }).then(user => {
+            if (user) {
+                res.status(400).send({
+                    message: "Ошибка! Почтовый ящик уже используется"
+                });
+                return;
+            }
+            next();
+        });
+    } else {
         next();
-    });
+    }
 };
 
 checkName = (req, res, next) => {

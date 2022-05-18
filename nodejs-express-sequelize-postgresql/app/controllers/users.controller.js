@@ -161,6 +161,10 @@ exports.allAccess = (req, res) => {
 };
 
 exports.userBoard = (req, res) => {
+    return userBoard (req, res); 
+}
+
+function userBoard (req, res) {
     const id = req.userId;
 
     Users.findByPk(id)
@@ -200,9 +204,11 @@ exports.updateData = (req, res) => {
     })
         .then(num => {
             if (num == 1) {
-                res.send({
-                    message: "Данные успешно обновлены!"
-                });
+                //res.send({
+                    //message: "Данные успешно обновлены!"
+                    
+                //});
+                userBoard (req, res);
             } else {
                 res.status(400).send({
                     message: "Не удалось обновить данные пользователя. Возможно, пользователь не найден, или запрос на обновление пуст"
