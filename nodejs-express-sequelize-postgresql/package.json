@@ -31,12 +31,9 @@
     "express": "^4.17.3",
     "jest": "^28.1.0",
     "jsonwebtoken": "^8.5.1",
+    "npm-check": "^5.9.2",
     "pg": "^8.7.3",
-    "pg-hstore": "^2.3.4",
     "sequelize": "^6.17.0",
     "supertest": "^6.2.3"
-  },
-  "devDependencies": {
-    "nodemon": "^1.18.10"
   }
 }
