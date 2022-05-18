@@ -99,9 +99,21 @@ exports.getOrders = (req, res) => {
     Orders.findAll({
         where: {
             userId: req.userId
+        },
+        include: {
+            model: OrderEntity,
+            //as: 'products',
+            //through: { attributes: ['amount'] }
         }
     }).then(orders => {
-        if(orders) {
+        if(orders){
+            orders.forEach(order => {
+                var total = order.deliveryPrice;
+                order.orderEntities.forEach(product => {
+                    total += product.price * product.amount;
+                });
+                order.setDataValue("price", Math.round(total * 100) / 100);
+            });
             res.send(orders);
         } else {
             res.status(500).send({
