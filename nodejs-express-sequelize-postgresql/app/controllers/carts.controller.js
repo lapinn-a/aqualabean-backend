@@ -16,7 +16,7 @@ exports.addCart = (req, res) => {
         .then(user => {
             if (user) {
                 //Проверка на Повторное добавление товара
-                Carts.findOne({ where: { productId: productId } }).then(cartProd => {
+                Carts.findOne({ where: { userId: user.id, productId: productId } }).then(cartProd => {
                     if (cartProd) {
                         //Проверка на наличие количества товара
                         Products.findByPk(productId).then(prod => {
@@ -31,9 +31,7 @@ exports.addCart = (req, res) => {
                                         }
                                     }).then(cartProd => {
                                         if (parseInt(cartProd) === 1) {
-                                            res.send({
-                                                message: "Товар добавлен в корзину!"
-                                            });
+                                            getCart(req, res);
                                         } else {
                                             res.send({
                                                 message: "Не удалось добавить товар в корзину"
@@ -153,7 +151,7 @@ function getCart(req, res) {
                                     row.setDataValue("images", images);
                                 })
                             );
-                            row.setDataValue("amount", row.carts.amount);
+                            row.setDataValue("cartAmount", row.carts.amount);
                             row.setDataValue("carts", undefined);
                         });
                         Promise.all(promises)
@@ -194,14 +192,19 @@ exports.delCart = (req, res) => {
     const id = req.userId;
     const pId = req.body.id;
 
+    const where = {
+        userId: id,
+    }
+
+    if(pId){
+        where.productId = pId;
+    }
+
     Users.findByPk(id)
         .then(user => {
             if (user) {
                 Carts.destroy({
-                    where: {
-                        userId: id,
-                        productId: pId,
-                    }
+                    where: where
                 })
                     .then(() => {
                         /*if (num == 1) {

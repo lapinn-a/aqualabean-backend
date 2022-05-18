@@ -72,19 +72,26 @@ function getImages(id) {
 
 // Получить параметр для объединения
 function getInclude(token) {
-    const include = {
+    const include = [{
         model: Users,
         as: 'favorites1',
         required: false,
         through: { attributes: [] },
         where: { id: 0 }
-    };
+    }, {
+        model: Users,
+        as: 'carts1',
+        required: false,
+        through: { attributes: ['amount'] },
+        where: { id: 0 }
+    }];
     if (token) {
         jwt.verify(token, config.secret, (err, decoded) => {
             if (err) {
                 return;
             }
-            include.where.id = decoded.id;
+            include[0].where.id = decoded.id;
+            include[1].where.id = decoded.id;
         });
     }
     return include;
@@ -101,6 +108,8 @@ exports.findOne = (req, res) => {
                 data[0].setDataValue("images", data[1]);
                 data[0].setDataValue("favorite", data[0].favorites1.length === 1);
                 data[0].setDataValue("favorites1", undefined);
+                data[0].setDataValue("cartAmount", data[0].carts1.length > 0 ? data[0].carts1[0].carts.amount : 0);
+                data[0].setDataValue("carts1", undefined);
                 res.send(data[0]);
             } else {
                 res.status(404).send({
@@ -178,7 +187,9 @@ exports.getCatalog = (req, res) => {
                     })
                 );
                 row.setDataValue("favorite", row.favorites1.length === 1);
+                row.setDataValue("cartAmount", row.carts1.length > 0 ? row.carts1[0].carts.amount : 0);
                 row.setDataValue("favorites1", undefined);
+                row.setDataValue("carts1", undefined);
             });
             Promise.all(promises)
                 .then(() => {

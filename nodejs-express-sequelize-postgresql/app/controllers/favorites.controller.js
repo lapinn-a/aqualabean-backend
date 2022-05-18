@@ -61,7 +61,14 @@ function getFav(req, res) {
                     include: {
                         model: Products,
                         as: 'favorites1',
-                        through: { attributes: [] }
+                        through: { attributes: [] },
+                        include: {
+                            model: Users,
+                            as: 'carts1',
+                            required: false,
+                            through: { attributes: ['amount'] },
+                            where: { id: user.id }
+                        }
                     }
                 }).then(fav => {
                     if (fav) {
@@ -75,6 +82,8 @@ function getFav(req, res) {
                                     row.setDataValue("images", images);
                                 })
                             );
+                            row.setDataValue("cartAmount", row.carts1.length > 0 ? row.carts1[0].carts.amount : 0);
+                            row.setDataValue("carts1", undefined);
                         });
                         Promise.all(promises)
                             .then(() => {

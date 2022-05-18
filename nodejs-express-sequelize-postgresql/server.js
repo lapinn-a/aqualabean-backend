@@ -36,6 +36,10 @@ if (process.env.NODE_ENV !== 'test') {
     });
 }
 
+/*db.sequelize.sync({ force: true }).then(() => {
+    initial();
+});*/
+
 function initial() {
     Roles.create({
         id: 0,
@@ -120,6 +124,7 @@ require("./app/routes/product.routes")(app);
 require("./app/routes/catalog.routes")(app);
 require("./app/routes/favorites.routes")(app);
 require("./app/routes/carts.routes")(app);
+require("./app/routes/order.routes")(app);
 
 // Function to serve all static files
 // inside public directory.
