@@ -28,7 +28,7 @@ checkRequiredFieldsExists = (req, res, next) => {
 }
 
 checkDuplicatePhone = (req, res, next) => {
-    if(req.body.phone) {
+    if (req.body.phone) {
         users.findOne({
             where: {
                 phone: req.body.phone
@@ -48,7 +48,7 @@ checkDuplicatePhone = (req, res, next) => {
 }
 
 checkDuplicateEmail = (req, res, next) => {
-    if(req.body.email && req.body.email !== '') {
+    if (req.body.email && req.body.email !== '') {
         users.findOne({
             where: {
                 email: req.body.email
@@ -68,7 +68,7 @@ checkDuplicateEmail = (req, res, next) => {
 };
 
 checkName = (req, res, next) => {
-    if(req.body.name && req.body.name === '') {
+    if (req.body.name && req.body.name === '') {
         res.status(400).send({
             message: "Ошибка! Имя не может быть пустым"
         });
@@ -78,7 +78,7 @@ checkName = (req, res, next) => {
 };
 
 checkRolesExisted = (req, res, next) => {
-    if(req.body.roles) {
+    if (req.body.roles) {
         for (let i = 0; i < req.body.roles.length; i++) {
             if (!ROLES.includes(req.body.roles[i])) {
                 res.status(400).send({

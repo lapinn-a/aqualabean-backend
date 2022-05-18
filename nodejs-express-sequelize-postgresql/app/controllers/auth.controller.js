@@ -37,6 +37,7 @@ exports.register = (req, res) => {
             }
         })
         .catch(err => {
+            console.log(err.message);
             res.status(500).send({ message: err.message });
         });
 };
@@ -80,6 +81,7 @@ exports.login = (req, res) => {
             });
         })
         .catch(err => {
+            console.log(err.message);
             res.status(500).send({ message: err.message });
         });
 };

@@ -71,41 +71,31 @@ function initial() {
         var MadeManufacturerAll = [{ made: "Россия, г. Москва", manufacturer: "Шишкин лес", name: ["Шишкин лес"] },
             { made: "Россия, г. Тула", manufacturer: "IDS Borjomi Russia", name: ["Borjomi"] },
             { made: "Россия, Московская область", manufacturer: "Бобимэкс", name: ["Снежская"] },
-            {
-                made: "Россия, г. Екатеренбург",
-                manufacturer: "Меркурий",
-                name: ["Пилигрим", "Архызская", "Меркурий", "Кубай"]
-            },
-            {
-                made: "Россия, г. Самара",
-                manufacturer: "PepsiСo",
-                name: ["Aqua Minerale", "Родники России", "Ессентуки"]
-            },
-            {
-                made: "Россия, г. Санкт-Петербург",
-                manufacturer: "Аквалайф",
-                name: ["Аквалайф", "Черноголовка", "Славяновская"]
-            },
+            { made: "Россия, г. Екатеренбург", manufacturer: "Меркурий", name: ["Пилигрим", "Архызская", "Меркурий", "Кубай"] },
+            { made: "Россия, г. Самара", manufacturer: "PepsiСo", name: ["Aqua Minerale", "Родники России", "Ессентуки"] },
+            { made: "Россия, г. Санкт-Петербург", manufacturer: "Аквалайф", name: ["Аквалайф", "Черноголовка", "Славяновская"] },
             { made: "Франция, г. Эвьян-ле-Бен", manufacturer: "Danone", name: ["Evian"] },
             { made: "Россия, г. Черкесск", manufacturer: "Архыз Оригинал", name: ["Архыз"] }
         ];
-        var mineralization = ["", "", " минеральная"];
+        /*var mineralization = ["", "", " минеральная"];
         var natural = ["", "", " природная"];
         var drinking = ["", " питьевая"];
         var medical = ["", "", " лечебно-столовая", " лечебная"];
         var carbonated = ["", " негазированная", " газированная"];
-        var children = ["", "", " для детского питания"];
+        var children = ["", "", " для детского питания"];*/
         var randM = Math.random() * MadeManufacturerAll.length | 0;
         var made = MadeManufacturerAll[randM].made;
         var manufacturer = MadeManufacturerAll[randM].manufacturer;
-        var name = "Вода ";
+        var name = /*"Вода "*/"";
         name += MadeManufacturerAll[randM].name[Math.random() * MadeManufacturerAll[randM].name.length | 0];
-        name += mineralization[Math.random() * mineralization.length | 0];
+        /*name += mineralization[Math.random() * mineralization.length | 0];
         name += natural[Math.random() * natural.length | 0];
         name += drinking[Math.random() * drinking.length | 0];
         name += medical[Math.random() * medical.length | 0];
         name += carbonated[Math.random() * carbonated.length | 0];
-        name += children[Math.random() * carbonated.length | 0];
+        name += children[Math.random() * children.length | 0];*/
+        var info = [" минеральная", " природная", " питьевая", " лечебно-столовая", " лечебная", " негазированная", " газированная", " для детского питания"];
+        name += info[Math.random() * info.length | 0];
         name += " " + volume.toString().replace(".", ",") + " л";
         Products.create({
             name: name,

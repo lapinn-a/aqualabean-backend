@@ -11,18 +11,19 @@ exports.addFav = (req, res) => {
 
     Users.findByPk(id)
         .then(user => {
-            if(user) {
+            if (user) {
                 const favProduct = {
                     userId: user.id,
                     productId: pId
                 };
 
                 Favorites.create(favProduct)
-                    .then(data => {
+                    .then(() => {
                         //res.send(data);
                         getFav(req, res);
                     })
                     .catch(err => {
+                        console.log(err.message);
                         getFav(req, res);
                     });
 
@@ -33,6 +34,7 @@ exports.addFav = (req, res) => {
             }
         })
         .catch(err => {
+            console.log(err.message);
             res.status(500).send({
                 message: "Не удалось добавить товар в избранное"
             });
@@ -48,9 +50,9 @@ exports.getFav = (req, res) => {
 function getFav(req, res) {
     const id = req.userId;
 
-     Users.findByPk(id)
+    Users.findByPk(id)
         .then(user => {
-            if(user) {
+            if (user) {
 
                 Users.findOne({
                     where: {
@@ -67,7 +69,7 @@ function getFav(req, res) {
                         fav.favorites1.forEach((row) => {
                             promises.push(productsController.getImages(row.id)
                                 .then((images) => {
-                                    if(images.length > 1){
+                                    if (images.length > 1) {
                                         images.length = 1;
                                     }
                                     row.setDataValue("images", images);
@@ -84,6 +86,7 @@ function getFav(req, res) {
                         });
                     }
                 }).catch(err => {
+                    console.log(err.message);
                     res.status(500).send({
                         message: "Не удалось получить избранное"
                     });
@@ -95,11 +98,12 @@ function getFav(req, res) {
             }
         })
         .catch(err => {
+            console.log(err.message);
             res.status(500).send({
                 message: "Не удалось получить избранное"
             });
         });
-};
+}
 
 
 //Убрать из избранного
@@ -109,17 +113,18 @@ exports.delFav = (req, res) => {
 
     Users.findByPk(id)
         .then(user => {
-            if(user) {
+            if (user) {
                 Favorites.destroy({
                     where: {
                         userId: id,
                         productId: pId
                     }
                 })
-                    .then(num => {
+                    .then(() => {
                         getFav(req, res);
                     })
                     .catch(err => {
+                        console.log(err.message);
                         res.status(500).send({
                             message: "Не удалось удалить товар из избранного"
                         });
@@ -132,6 +137,7 @@ exports.delFav = (req, res) => {
             }
         })
         .catch(err => {
+            console.log(err.message);
             res.status(500).send({
                 message: "Не удалось удалить товар из избранного"
             });
